@@ -29,12 +29,14 @@ public class SimpleClock {
         return dateTimeFormat.format(mCurrentDateTime.getTime());
     }
 
+    //String for TextView
     public String getCurrentTime() {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         Calendar time = Calendar.getInstance();
         return timeFormat.format(time.getTime());
     }
 
+    //long to store in DB
     public long getTimeInMillis() {
         Calendar time = Calendar.getInstance();
         return time.getTimeInMillis();

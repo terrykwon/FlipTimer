@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.kwonterry.fliptimer.data.TimeContract;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Terry Kwon on 1/1/2016.
  */
@@ -35,8 +38,10 @@ public class TimeAdapter extends CursorAdapter{
         TextView tvStatus = (TextView) view.findViewById(R.id.list_item_status_textview);
 
 
-        String time = String.valueOf(cursor.getLong(
-                    cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_TIME)));
+        Long timeMillis = cursor.getLong(
+                    cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_TIME));
+        String time = millisToString(timeMillis);
+
         int status = cursor.getInt(
                     cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_STATUS));
 
@@ -49,6 +54,12 @@ public class TimeAdapter extends CursorAdapter{
         }
 
         tvTime.setText(time);
+    }
+
+    public String millisToString(long millis) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date(millis);
+        return timeFormat.format(date);
     }
 
 }
