@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">FlipTimer</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="timer_holder">TIMER</string>
+    <string name="button_view">View Log</string>
+    <string name="list_time">TIME</string>
+    <string name="list_status">STATUS</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

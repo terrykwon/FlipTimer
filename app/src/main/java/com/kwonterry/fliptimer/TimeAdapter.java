@@ -1,0 +1,53 @@
+package com.kwonterry.fliptimer;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CursorAdapter;
+import android.widget.TextView;
+
+import com.kwonterry.fliptimer.data.TimeContract;
+
+/**
+ * Created by Terry Kwon on 1/1/2016.
+ */
+public class TimeAdapter extends CursorAdapter{
+
+    private final String mWorking = "START";
+    private final String mNotWorking = "STOP";
+
+    public TimeAdapter(Context context, Cursor c, int flags) {
+        super(context, c, flags);
+    }
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(R.layout.list_item_time, parent, false);
+        return view;
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        TextView tvTime = (TextView) view.findViewById(R.id.list_item_time_textview);
+        TextView tvStatus = (TextView) view.findViewById(R.id.list_item_status_textview);
+
+        String time = cursor.getString(
+                    cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_TIME));
+        int status = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_STATUS));
+
+        if (status == 1) {
+            view.setBackgroundColor(Color.GREEN);
+            tvStatus.setText(mWorking);
+        } else {
+            view.setBackgroundColor(Color.RED);
+            tvStatus.setText(mNotWorking);
+        }
+
+        tvTime.setText(time);
+    }
+
+}
