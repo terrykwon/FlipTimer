@@ -34,8 +34,9 @@ public class TimeAdapter extends CursorAdapter{
         TextView tvTime = (TextView) view.findViewById(R.id.list_item_time_textview);
         TextView tvStatus = (TextView) view.findViewById(R.id.list_item_status_textview);
 
-        String time = cursor.getString(
-                    cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_TIME));
+
+        String time = String.valueOf(cursor.getLong(
+                    cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_TIME)));
         int status = cursor.getInt(
                     cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_STATUS));
 

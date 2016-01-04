@@ -119,11 +119,11 @@ public class TimerFragment extends Fragment
         if (isChecked) {
             mTimerTextView.setText(mClock.getCurrentTime());
             mTimerTextView.setTextColor(Color.BLUE);
-            mTimeDbHelper.insertData(mClock.getCurrentTime(), 1);
+            mTimeDbHelper.insertData(mClock.getTimeInMillis(), 1);
         } else {
             mTimerTextView.setText(mClock.getCurrentTime());
             mTimerTextView.setTextColor(Color.RED);
-            mTimeDbHelper.insertData(mClock.getCurrentTime(), 0);
+            mTimeDbHelper.insertData(mClock.getTimeInMillis(), 0);
         }
     }
 

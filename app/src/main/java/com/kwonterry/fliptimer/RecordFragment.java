@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,8 @@ import com.kwonterry.fliptimer.data.TimeDbHelper;
  * create an instance of this fragment.
  */
 public class RecordFragment extends Fragment {
+
+    private final String LOG_TAG = RecordFragment.class.getSimpleName();
 
     private OnFragmentInteractionListener mListener;
     private TimeAdapter mTimeAdapter;
@@ -54,6 +57,7 @@ public class RecordFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_clear) {
+            Log.v(LOG_TAG, "Log Cleared.");
             mTimeDbHelper.removeAll();
             return true;
         }

@@ -19,7 +19,7 @@ public class TimeContract {
 
     public static abstract class TimeEntry implements BaseColumns {
         public static final String TABLE_NAME = "time";
-        public static final String COLUMN_TIME = "time_milliseconds";
+        public static final String COLUMN_TIME = "time_millis";
         public static final String COLUMN_STATUS = "status";
         public static final String COLUMN_WORKTIME = "worktime";
     }

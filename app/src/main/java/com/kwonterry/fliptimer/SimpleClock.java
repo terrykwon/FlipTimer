@@ -35,7 +35,10 @@ public class SimpleClock {
         return timeFormat.format(time.getTime());
     }
 
-
+    public long getTimeInMillis() {
+        Calendar time = Calendar.getInstance();
+        return time.getTimeInMillis();
+    }
 
 }
 

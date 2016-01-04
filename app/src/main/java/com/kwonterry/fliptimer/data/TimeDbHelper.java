@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class TimeDbHelper extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "time.db";
 
     public TimeDbHelper(Context context) {
@@ -23,7 +23,7 @@ public class TimeDbHelper extends SQLiteOpenHelper{
         final String SQL_CREATE_TIME_TABLE = "CREATE TABLE " + TimeContract.TimeEntry.TABLE_NAME
                 + " (" +
                 TimeContract.TimeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                TimeContract.TimeEntry.COLUMN_TIME + " TEXT NOT NULL, " +
+                TimeContract.TimeEntry.COLUMN_TIME + " INTEGER NOT NULL, " +
                 TimeContract.TimeEntry.COLUMN_STATUS + " INTEGER NOT NULL, " +
                 TimeContract.TimeEntry.COLUMN_WORKTIME + " INTEGER NULL " +
                 " );";
@@ -47,7 +47,19 @@ public class TimeDbHelper extends SQLiteOpenHelper{
 //        while (cursor.moveToNext())
 //    }
 
-    public boolean insertData(String time, int status) {
+//    //when time is a String i.e) HH:MM:SS
+//    public boolean insertData(String time, int status) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(TimeContract.TimeEntry.COLUMN_TIME, time);
+//        contentValues.put(TimeContract.TimeEntry.COLUMN_STATUS, status);
+//
+//        long result = db.insert(TimeContract.TimeEntry.TABLE_NAME, null, contentValues);
+//        return (result != -1);
+//    }
+
+    //when time is in millis (long)
+    public boolean insertData(long time, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TimeContract.TimeEntry.COLUMN_TIME, time);
