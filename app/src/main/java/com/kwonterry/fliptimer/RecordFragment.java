@@ -58,7 +58,12 @@ public class RecordFragment extends Fragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_clear) {
             Log.v(LOG_TAG, "Log Cleared.");
+
+            // Delete database.
             mTimeDbHelper.removeAll();
+
+            // Clear screen
+            mTimeAdapter.swapCursor(mTimeDbHelper.getAllData());
             return true;
         }
 

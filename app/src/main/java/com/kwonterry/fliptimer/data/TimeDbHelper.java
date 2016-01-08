@@ -47,7 +47,7 @@ public class TimeDbHelper extends SQLiteOpenHelper{
 //        while (cursor.moveToNext())
 //    }
 
-//    //when time is a String i.e) HH:MM:SS
+//    // when time is a String i.e) HH:MM:SS
 //    public boolean insertData(String time, int status) {
 //        SQLiteDatabase db = this.getWritableDatabase();
 //        ContentValues contentValues = new ContentValues();
@@ -58,7 +58,7 @@ public class TimeDbHelper extends SQLiteOpenHelper{
 //        return (result != -1);
 //    }
 
-    //when time is in millis (long)
+    // when time is in millis (long)
     public boolean insertData(long time, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -75,6 +75,7 @@ public class TimeDbHelper extends SQLiteOpenHelper{
         return result;
     }
 
+    // Clears all data. Not sure if this is the right way though.
     public void removeAll() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TimeContract.TimeEntry.TABLE_NAME, null, null);
