@@ -115,15 +115,16 @@ public class TimerFragment extends Fragment
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        WriteTimeTask writeTimeTask = new WriteTimeTask(getContext());
 
         if (isChecked) {
             mTimerTextView.setText(mClock.getCurrentTime());
             mTimerTextView.setTextColor(Color.BLUE);
-            mTimeDbHelper.insertData(mClock.getTimeInMillis(), 1);
+            writeTimeTask.execute(mClock.getTimeInMillis(), 1);
         } else {
             mTimerTextView.setText(mClock.getCurrentTime());
             mTimerTextView.setTextColor(Color.RED);
-            mTimeDbHelper.insertData(mClock.getTimeInMillis(), 0);
+            writeTimeTask.execute(mClock.getTimeInMillis(), 0);
         }
     }
 
