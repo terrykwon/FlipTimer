@@ -36,7 +36,7 @@ public class TimeAdapter extends CursorAdapter{
     public void bindView(View view, Context context, Cursor cursor) {
         TextView tvTime = (TextView) view.findViewById(R.id.list_item_time_textview);
         TextView tvStatus = (TextView) view.findViewById(R.id.list_item_status_textview);
-
+        TextView tvInterval = (TextView) view.findViewById(R.id.list_item_interval_textview);
 
         Long timeMillis = cursor.getLong(
                     cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_TIME));
@@ -46,20 +46,30 @@ public class TimeAdapter extends CursorAdapter{
                     cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_STATUS));
 
         if (status == 1) {
-            view.setBackgroundColor(Color.GREEN);
+            view.setBackgroundColor(Color.parseColor("#cdff99"));
             tvStatus.setText(mWorking);
         } else {
-            view.setBackgroundColor(Color.RED);
+            view.setBackgroundColor(Color.parseColor("#ffcccc"));
             tvStatus.setText(mNotWorking);
         }
 
         tvTime.setText(time);
+
+        long intervalMillis = cursor.getLong(
+                cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_WORKTIME));
+        tvInterval.setText(millisIntervalToString(intervalMillis));
     }
 
     public String millisToString(long millis) {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date(millis);
         return timeFormat.format(date);
+    }
+
+    public String millisIntervalToString(long millis) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("mm:ss");
+        Date date = new Date(millis);
+        return timeFormat.format(millis);
     }
 
 }

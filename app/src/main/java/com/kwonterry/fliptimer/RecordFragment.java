@@ -31,6 +31,9 @@ public class RecordFragment extends Fragment {
     private TimeAdapter mTimeAdapter;
     private TimeDbHelper mTimeDbHelper;
 
+    // to close cursor, declare member
+    private Cursor mCursor;
+
     public RecordFragment() {
         // Required empty public constructor
     }
@@ -77,9 +80,9 @@ public class RecordFragment extends Fragment {
         View RecordView = inflater.inflate(R.layout.fragment_record, container, false);
 
         mTimeDbHelper = new TimeDbHelper(getContext());
-        Cursor cursor = mTimeDbHelper.getAllData();
+        mCursor = mTimeDbHelper.getAllData();
 
-        mTimeAdapter = new TimeAdapter(getContext(), cursor, 0);
+        mTimeAdapter = new TimeAdapter(getContext(), mCursor, 0);
 
         ListView listView = (ListView) RecordView.findViewById(R.id.listview_log);
         listView.setAdapter(mTimeAdapter);
@@ -108,6 +111,8 @@ public class RecordFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        Log.v(LOG_TAG, "onDetach RecordFragment");
+        mCursor.close();
     }
 
     /**

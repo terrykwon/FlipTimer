@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -32,13 +33,10 @@ public class TimerFragment extends Fragment
         implements CompoundButton.OnCheckedChangeListener {
 
     private final String LOG_TAG = TimerFragment.class.getSimpleName();
+
     private OnFragmentInteractionListener mListener;
     private TextView mTimerTextView;
-    private SimpleClock mClock;
-    private TimeDbHelper mTimeDbHelper;
-
-    //debug
-    private TimeRecordActivity mRecord;
+    private TextClock mTextClock;
 
     public TimerFragment() {
         // Required empty public constructor
@@ -55,8 +53,6 @@ public class TimerFragment extends Fragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mClock = new SimpleClock();
-        mTimeDbHelper = new TimeDbHelper(getContext());
         super.onCreate(savedInstanceState);
     }
 
@@ -67,9 +63,7 @@ public class TimerFragment extends Fragment
 
         View TimerView = inflater.inflate(R.layout.fragment_timer, container, false);
         mTimerTextView = (TextView) TimerView.findViewById(R.id.timerText);
-
-        //Debug
-        mTimerTextView.setText("Time");
+        mTextClock = (TextClock) TimerView.findViewById(R.id.textClock);
 
         ToggleButton toggleButton = (ToggleButton) TimerView.findViewById(R.id.toggleButton);
         //what does this refer to?
@@ -118,13 +112,13 @@ public class TimerFragment extends Fragment
         WriteTimeTask writeTimeTask = new WriteTimeTask(getContext());
 
         if (isChecked) {
-            mTimerTextView.setText(mClock.getCurrentTime());
+            mTimerTextView.setText(mTextClock.getText());
             mTimerTextView.setTextColor(Color.BLUE);
-            writeTimeTask.execute(mClock.getTimeInMillis(), 1);
+            writeTimeTask.execute(mTextClock.getText().toString(), 1);
         } else {
-            mTimerTextView.setText(mClock.getCurrentTime());
+            mTimerTextView.setText(mTextClock.getText());
             mTimerTextView.setTextColor(Color.RED);
-            writeTimeTask.execute(mClock.getTimeInMillis(), 0);
+            writeTimeTask.execute(mTextClock.getText().toString(), 0);
         }
     }
 
