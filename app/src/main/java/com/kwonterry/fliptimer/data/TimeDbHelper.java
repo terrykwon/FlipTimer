@@ -5,12 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by Terry Kwon on 1/1/2016.
  */
 public class TimeDbHelper extends SQLiteOpenHelper{
 
+    private final String LOG_TAG = TimeDbHelper.class.getSimpleName();
     private static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "time.db";
 
@@ -38,15 +40,6 @@ public class TimeDbHelper extends SQLiteOpenHelper{
     }
 
 
-    // TODO: 1/4/2016 FILL THE WORKTIME COLUMN = TIME - PREVIOUS TIME 
-//    public int getTimeInterval() {
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery("SELECT " + TimeContract.TimeEntry.COLUMN_TIME +
-//                " FROM " + TimeContract.TimeEntry.TABLE_NAME, null);
-//
-//        while (cursor.moveToNext())
-//    }
-
 //    // when time is a String i.e) HH:MM:SS
 //    public boolean insertData(String time, int status) {
 //        SQLiteDatabase db = this.getWritableDatabase();
@@ -62,11 +55,36 @@ public class TimeDbHelper extends SQLiteOpenHelper{
     public boolean insertData(long time, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+
+        Long previousTime = getPreviousTime();
+
         contentValues.put(TimeContract.TimeEntry.COLUMN_TIME, time);
         contentValues.put(TimeContract.TimeEntry.COLUMN_STATUS, status);
 
+        if (previousTime != 0) {
+            contentValues.put(TimeContract.TimeEntry.COLUMN_WORKTIME, time - previousTime);
+        }
+
         long result = db.insert(TimeContract.TimeEntry.TABLE_NAME, null, contentValues);
         return (result != -1);
+    }
+
+    // Returns stored time of previous row.
+    // Returns null if none.
+    public long getPreviousTime() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + TimeContract.TimeEntry.COLUMN_TIME +
+                " FROM " + TimeContract.TimeEntry.TABLE_NAME, null);
+
+        if (cursor.moveToLast()) {
+            long prevTime = cursor.getLong(cursor
+                    .getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_TIME));
+            cursor.close();
+            return prevTime;
+        } else {
+            cursor.close();
+            return 0;
+        }
     }
 
     public Cursor getAllData() {
