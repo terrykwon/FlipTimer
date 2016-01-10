@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 /**
  * Created by Terry Kwon on 1/2/2016.
  * ContentProvider class. Honestly no idea...
+ * Currently not used at all
  */
 public class TimeProvider extends ContentProvider {
 

@@ -36,13 +36,13 @@ public class WriteTimeTask extends AsyncTask<Object, Void, Void> {
             return null;
         }
 
+        // Inserts time, status, + interval
         String timeString = (String) params[0];
         long time = StringToMillis(timeString);
 
         int status = (int) params[1];
 
         mDbHelper.insertData(time, status);
-
 
         return null;
     }

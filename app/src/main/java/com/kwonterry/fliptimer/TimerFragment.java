@@ -54,6 +54,11 @@ public class TimerFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState == null) {
+            Intent intent = new Intent(getActivity(), FlipService.class);
+            getActivity().startService(intent);
+        }
     }
 
     @Override
