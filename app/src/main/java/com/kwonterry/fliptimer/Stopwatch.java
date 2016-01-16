@@ -41,6 +41,8 @@ public class Stopwatch {
         mHandler.postDelayed(mCounter, mCountDownInterval);
     }
 
+
+    // Should not update UI thread from this thread?
     public void Start(final TextView display) {
         mCounter = new Runnable() {
             @Override

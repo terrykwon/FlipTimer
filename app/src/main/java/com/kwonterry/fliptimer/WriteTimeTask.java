@@ -30,6 +30,8 @@ public class WriteTimeTask extends AsyncTask<Object, Void, Void> {
         mDbHelper = new TimeDbHelper(mContext);
     }
 
+
+
     @Override
     protected Void doInBackground(Object... params) {
         if (params.length == 0) {

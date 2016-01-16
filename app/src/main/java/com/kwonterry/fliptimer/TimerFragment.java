@@ -1,7 +1,5 @@
 package com.kwonterry.fliptimer;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,10 +13,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
-
-import com.kwonterry.fliptimer.data.TimeDbHelper;
 
 
 /**
@@ -29,8 +24,7 @@ import com.kwonterry.fliptimer.data.TimeDbHelper;
  * Use the {@link TimerFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TimerFragment extends Fragment
-        implements CompoundButton.OnCheckedChangeListener {
+public class TimerFragment extends Fragment {
 
     private final String LOG_TAG = TimerFragment.class.getSimpleName();
 
@@ -54,11 +48,6 @@ public class TimerFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState == null) {
-            Intent intent = new Intent(getActivity(), FlipService.class);
-            getActivity().startService(intent);
-        }
     }
 
     @Override
@@ -70,9 +59,24 @@ public class TimerFragment extends Fragment
         mTimerTextView = (TextView) TimerView.findViewById(R.id.timerText);
         mTextClock = (TextClock) TimerView.findViewById(R.id.textClock);
 
-        ToggleButton toggleButton = (ToggleButton) TimerView.findViewById(R.id.toggleButton);
-        //what does this refer to?
-        toggleButton.setOnCheckedChangeListener(this);
+        ToggleButton recordTimeButton = (ToggleButton) TimerView.findViewById(R.id.toggle_record_time);
+        recordTimeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                WriteTimeTask writeTimeTask = new WriteTimeTask(getContext());
+
+                if (isChecked) {
+                    mTimerTextView.setText(mTextClock.getText());
+                    mTimerTextView.setTextColor(Color.BLUE);
+                    writeTimeTask.execute(mTextClock.getText().toString(), 1);
+                } else {
+                    mTimerTextView.setText(mTextClock.getText());
+                    mTimerTextView.setTextColor(Color.RED);
+                    writeTimeTask.execute(mTextClock.getText().toString(), 0);
+                }
+            }
+        });
+
 
         Button viewLogButton = (Button) TimerView.findViewById(R.id.button_log);
         viewLogButton.setOnClickListener(new View.OnClickListener() {
@@ -80,8 +84,20 @@ public class TimerFragment extends Fragment
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), TimeRecordActivity.class);
                 startActivity(intent);
+            }
+        });
 
-                // TODO: Interact with MainActivity, add RecordFragment to backstack
+        ToggleButton startServiceButton = (ToggleButton) TimerView.findViewById(R.id.toggle_service);
+        startServiceButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Intent intent = new Intent(getActivity(), FlipService.class);
+                if (isChecked) {
+                    getActivity().startService(intent);
+
+                } else {
+                    getActivity().stopService(intent);
+                }
             }
         });
 
@@ -112,20 +128,6 @@ public class TimerFragment extends Fragment
         mListener = null;
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        WriteTimeTask writeTimeTask = new WriteTimeTask(getContext());
-
-        if (isChecked) {
-            mTimerTextView.setText(mTextClock.getText());
-            mTimerTextView.setTextColor(Color.BLUE);
-            writeTimeTask.execute(mTextClock.getText().toString(), 1);
-        } else {
-            mTimerTextView.setText(mTextClock.getText());
-            mTimerTextView.setTextColor(Color.RED);
-            writeTimeTask.execute(mTextClock.getText().toString(), 0);
-        }
-    }
 
     /**
      * This interface must be implemented by activities that contain this

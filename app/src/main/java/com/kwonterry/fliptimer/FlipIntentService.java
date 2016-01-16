@@ -1,77 +1,51 @@
 package com.kwonterry.fliptimer;
 
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.Service;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+
 /**
- * FlipIntentService as a subclass of regular Service, not IntentService.
+ * Created by Terry Kwon on 1/10/2016.
  */
-public class FlipService extends Service implements SensorEventListener{
+public class FlipIntentService extends IntentService implements SensorEventListener{
 
-    private final String LOG_TAG = FlipService.class.getSimpleName();
-    private Thread mThread;
-    private Runnable mRunnable;
-
+    private final String LOG_TAG = FlipIntentService.class.getSimpleName();
     private Sensor mSensor;
-    private SensorManager mManager;
-
-    // to stop Thread. No idea.
-    private boolean threadContinue;
-
+    private SensorManager mSensorManager;
     private boolean isFaceUp;
+
     private WriteTimeTask mWriteTimeTask;
 
-    private Notification mNotification;
-    private NotificationManager mNotificationManager;
+    public FlipIntentService() {
+        super("FlipIntentService");
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+
+        Log.v(LOG_TAG, "Service started.");
+
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+        isFaceUp = true;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.v(LOG_TAG, "FlipService onCreate().");
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.v(LOG_TAG, "FlipService onStartCommand().");
-
-        mManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mSensor = mManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        isFaceUp = true;
-
-        mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mManager.registerListener(FlipService.this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
-                Log.v(LOG_TAG, "SensorEventListener Registered.");
-            }
-        };
-
-        mThread = new Thread(mRunnable);
-        mThread.start();
-
-        buildNotification();
-        startForeground(123, mNotification);
-
-        return Service.START_STICKY;
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 
     @Override
@@ -93,6 +67,7 @@ public class FlipService extends Service implements SensorEventListener{
                 isFaceUp = true;
                 mWriteTimeTask = new WriteTimeTask(this);
                 recordTime(0);
+                showNotification();
             }
         }
     }
@@ -106,25 +81,20 @@ public class FlipService extends Service implements SensorEventListener{
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mManager.unregisterListener(this, mSensor);
-        Log.v(LOG_TAG, "FlipService onDestroy().");
-    }
-
-    @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 
-    // Build Notification
-    public void buildNotification() {
+    public void showNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setAutoCancel(true);
-        builder.setContentTitle("FlipService Running");
+        builder.setContentTitle("FlipIntentService Running");
         builder.setContentText("Hi everyone, this is content text.");
         builder.setSmallIcon(R.drawable.ic_launcher);
-        mNotification = builder.build();
+        Notification notification = builder.build();
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.notify(8, notification);
     }
+
 
 }

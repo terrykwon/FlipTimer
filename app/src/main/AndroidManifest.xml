@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".TimeRecordActivity"></activity>
+        <service android:name=".FlipIntentService" />
         <service android:name=".FlipService" />
     </application>
 
