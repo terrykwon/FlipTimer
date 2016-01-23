@@ -1,8 +1,10 @@
 package com.kwonterry.fliptimer;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,7 +15,9 @@ import android.hardware.TriggerEventListener;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -43,6 +47,8 @@ public class RecordFragment extends Fragment {
     // to close cursor, declare member
     private Cursor mCursor;
 
+    private BroadcastReceiver receiver;
+
     public RecordFragment() {
         // Required empty public constructor
     }
@@ -58,6 +64,14 @@ public class RecordFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String s = intent.getStringExtra(FlipService.TIME_RECORDED);
+                mTimeAdapter.notifyDataSetChanged();
+            }
+        };
 
     }
 
@@ -92,10 +106,21 @@ public class RecordFragment extends Fragment {
         mTimeDbHelper = new TimeDbHelper(getContext());
         mCursor = mTimeDbHelper.getAllData();
 
+
         mTimeAdapter = new TimeAdapter(getContext(), mCursor, 0);
 
         ListView listView = (ListView) RecordView.findViewById(R.id.listview_log);
         listView.setAdapter(mTimeAdapter);
+
+        FloatingActionButton fab = (FloatingActionButton) RecordView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTimeDbHelper.removeAll();
+                mTimeAdapter.notifyDataSetChanged();
+                // doesn't refresh the list!!!!!
+            }
+        });
 
         return RecordView;
     }
@@ -123,6 +148,21 @@ public class RecordFragment extends Fragment {
         mListener = null;
         Log.v(LOG_TAG, "onDetach RecordFragment");
         mCursor.close();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver((receiver),
+                new IntentFilter(FlipService.TIME_RECORDED)
+        );
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
+        super.onStop();
     }
 
     /**

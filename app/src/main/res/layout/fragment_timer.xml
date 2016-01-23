@@ -15,34 +15,19 @@
         android:layout_marginTop="28dp"
         android:text="@string/timer_holder" />
 
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/toggle_service"
+        android:layout_gravity="center" />
+
     <TextClock
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="70dp"
         android:format12Hour="HH:mm:ss"
         android:id="@+id/textClock"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal|bottom"
         tools:targetApi="jelly_bean_mr1" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_view"
-        android:id="@+id/button_log"
-        android:layout_gravity="right|bottom" />
-
-    <ToggleButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New ToggleButton"
-        android:id="@+id/toggle_record_time"
-        android:layout_gravity="left|bottom" />
-
-    <ToggleButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New ToggleButton"
-        android:id="@+id/toggle_service"
-        android:layout_gravity="center_horizontal|bottom" />
 
 </FrameLayout>

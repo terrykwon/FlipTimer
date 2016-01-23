@@ -59,33 +59,6 @@ public class TimerFragment extends Fragment {
         mTimerTextView = (TextView) TimerView.findViewById(R.id.timerText);
         mTextClock = (TextClock) TimerView.findViewById(R.id.textClock);
 
-        ToggleButton recordTimeButton = (ToggleButton) TimerView.findViewById(R.id.toggle_record_time);
-        recordTimeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                WriteTimeTask writeTimeTask = new WriteTimeTask(getContext());
-
-                if (isChecked) {
-                    mTimerTextView.setText(mTextClock.getText());
-                    mTimerTextView.setTextColor(Color.BLUE);
-                    writeTimeTask.execute(mTextClock.getText().toString(), 1);
-                } else {
-                    mTimerTextView.setText(mTextClock.getText());
-                    mTimerTextView.setTextColor(Color.RED);
-                    writeTimeTask.execute(mTextClock.getText().toString(), 0);
-                }
-            }
-        });
-
-
-        Button viewLogButton = (Button) TimerView.findViewById(R.id.button_log);
-        viewLogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), TimeRecordActivity.class);
-                startActivity(intent);
-            }
-        });
 
         ToggleButton startServiceButton = (ToggleButton) TimerView.findViewById(R.id.toggle_service);
         startServiceButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

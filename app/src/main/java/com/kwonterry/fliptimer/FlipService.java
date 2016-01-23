@@ -3,6 +3,7 @@ package com.kwonterry.fliptimer;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -11,6 +12,7 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -37,10 +39,22 @@ public class FlipService extends Service implements SensorEventListener{
     private Notification mNotification;
     private NotificationManager mNotificationManager;
 
+    LocalBroadcastManager broadcaster;
+    static final public String TIME_RECORDED = "com.terrykwon.flipservice.TIME_RECORDED";
+
     @Override
     public void onCreate() {
         super.onCreate();
         Log.v(LOG_TAG, "FlipService onCreate().");
+
+        broadcaster = LocalBroadcastManager.getInstance(this);
+    }
+
+    public void sendResult() {
+        Intent intent = new Intent(TIME_RECORDED);
+//        if(message != null)
+//            intent.putExtra(TIME_RECORDED, message);
+        broadcaster.sendBroadcast(intent);
     }
 
     @Override
@@ -86,6 +100,7 @@ public class FlipService extends Service implements SensorEventListener{
                 isFaceUp = false;
                 mWriteTimeTask = new WriteTimeTask(this);
                 recordTime(1);
+                sendResult();
             }
         } else {
             if (event.values[2] > 0) {
@@ -93,6 +108,7 @@ public class FlipService extends Service implements SensorEventListener{
                 isFaceUp = true;
                 mWriteTimeTask = new WriteTimeTask(this);
                 recordTime(0);
+                sendResult();
             }
         }
     }
