@@ -1,5 +1,7 @@
 package com.kwonterry.fliptimer;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -29,8 +31,9 @@ public class TimerFragment extends Fragment {
     private final String LOG_TAG = TimerFragment.class.getSimpleName();
 
     private OnFragmentInteractionListener mListener;
-    private TextView mTimerTextView;
     private TextClock mTextClock;
+    private View mBackground;
+    private TextView motivateText;
 
     public TimerFragment() {
         // Required empty public constructor
@@ -56,9 +59,9 @@ public class TimerFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View TimerView = inflater.inflate(R.layout.fragment_timer, container, false);
-        mTimerTextView = (TextView) TimerView.findViewById(R.id.timerText);
         mTextClock = (TextClock) TimerView.findViewById(R.id.textClock);
-
+        mBackground = TimerView.findViewById(R.id.layout_timer);
+        motivateText = (TextView) TimerView.findViewById(R.id.motivation_text);
 
         ToggleButton startServiceButton = (ToggleButton) TimerView.findViewById(R.id.toggle_service);
         startServiceButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -67,14 +70,46 @@ public class TimerFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), FlipService.class);
                 if (isChecked) {
                     getActivity().startService(intent);
-
+                    fadeBackgroundColor(true);
+                    motivateText.setText("flip phone face down and work.");
+                    changeTextColor(true);
                 } else {
                     getActivity().stopService(intent);
+                    fadeBackgroundColor(false);
+                    motivateText.setText("Just do it.");
+                    changeTextColor(false);
                 }
             }
         });
 
         return TimerView;
+    }
+
+    public void fadeBackgroundColor(boolean turnOn) {
+        ObjectAnimator colorFade;
+        if (turnOn) {
+            colorFade = ObjectAnimator.ofObject(
+                    mBackground, "backgroundColor",
+                    new ArgbEvaluator(),0xffF9F9F9
+                    , Color.argb(255, 37, 49, 55));
+
+        } else {
+            colorFade = ObjectAnimator.ofObject(
+                    mBackground, "backgroundColor",
+                    new ArgbEvaluator(), Color.argb(255, 37, 49, 55), 0xffF9F9F9);
+        }
+        colorFade.setDuration(3000);
+        colorFade.start();
+    }
+
+    public void changeTextColor(boolean turnOn) {
+        if (turnOn) {
+            mTextClock.setTextColor(Color.parseColor("#FFFFFF"));
+            motivateText.setTextColor(Color.parseColor("#FFFFFF"));
+        } else {
+            mTextClock.setTextColor(Color.parseColor("#000000"));
+            motivateText.setTextColor(Color.parseColor("#000000"));
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

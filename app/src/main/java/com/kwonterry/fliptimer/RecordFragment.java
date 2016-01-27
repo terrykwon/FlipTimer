@@ -68,7 +68,8 @@ public class RecordFragment extends Fragment {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String s = intent.getStringExtra(FlipService.TIME_RECORDED);
+                Log.v(LOG_TAG, "Broadcast Intent Received.");
+                mTimeAdapter.swapCursor(mTimeDbHelper.getAllData());
                 mTimeAdapter.notifyDataSetChanged();
             }
         };
@@ -117,7 +118,7 @@ public class RecordFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mTimeDbHelper.removeAll();
-                mTimeAdapter.notifyDataSetChanged();
+                mTimeAdapter.swapCursor(mTimeDbHelper.getAllData());
                 // doesn't refresh the list!!!!!
             }
         });

@@ -2,6 +2,7 @@ package com.kwonterry.fliptimer;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,5 +72,6 @@ public class TimeAdapter extends CursorAdapter{
         Date date = new Date(millis);
         return timeFormat.format(millis);
     }
+
 
 }
