@@ -2,9 +2,12 @@ package com.kwonterry.fliptimer;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -43,6 +46,7 @@ public class FlipService extends Service implements SensorEventListener{
 
     LocalBroadcastManager broadcaster;
     static final public String TIME_RECORDED = "com.terrykwon.flipservice.TIME_RECORDED";
+    static final public String SERVICE_STOPPED = "com.terrykwon.flipservice.SERVICE_STOPPED";
 
     private final int WORKING = 1;
     private final int NWORKING = 0;
@@ -135,6 +139,7 @@ public class FlipService extends Service implements SensorEventListener{
     public void onDestroy() {
         super.onDestroy();
         mManager.unregisterListener(this, mSensor);
+        unregisterReceiver(stopServiceReceiver);
         Log.v(LOG_TAG, "FlipService onDestroy().");
     }
 
@@ -145,13 +150,28 @@ public class FlipService extends Service implements SensorEventListener{
 
     // Build Notification
     public void buildNotification() {
+        registerReceiver(stopServiceReceiver, new IntentFilter(SERVICE_STOPPED));
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0,
+                new Intent(SERVICE_STOPPED),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setAutoCancel(true);
-        builder.setContentTitle("FlipService Running");
-        builder.setContentText("Hi everyone, this is content text.");
-        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setContentTitle("Flip Timer Running");
+        builder.setContentText("Time recorded when phone flipped face down/up.");
+        builder.setSmallIcon(R.drawable.ic_alarm_white);
+        builder.addAction(R.drawable.ic_stop_white_48dp, "Stop", pi);
         mNotification = builder.build();
     }
+
+    protected BroadcastReceiver stopServiceReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent serviceStoppedIntent = new Intent(TimerFragment.FLIPSERVICE_STOPPED);
+            broadcaster.sendBroadcast(serviceStoppedIntent);
+            stopSelf();
+        }
+    };
 
     public long StringToMillis(String stringTime) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");

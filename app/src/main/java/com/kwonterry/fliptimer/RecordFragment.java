@@ -163,7 +163,6 @@ public class RecordFragment extends Fragment {
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
-        super.onStop();
     }
 
     /**
