@@ -13,7 +13,7 @@ import android.util.Log;
 public class TimeDbHelper extends SQLiteOpenHelper{
 
     private final String LOG_TAG = TimeDbHelper.class.getSimpleName();
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "time.db";
 
     public TimeDbHelper(Context context) {
@@ -89,7 +89,8 @@ public class TimeDbHelper extends SQLiteOpenHelper{
 
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor result = db.rawQuery("SELECT * FROM " + TimeContract.TimeEntry.TABLE_NAME, null);
+        Cursor result = db.rawQuery("SELECT * FROM " + TimeContract.TimeEntry.TABLE_NAME
+                + " ORDER BY " + TimeContract.TimeEntry._ID + " DESC", null);
         return result;
     }
 

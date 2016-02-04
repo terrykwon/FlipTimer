@@ -111,7 +111,7 @@ public class TimerFragment extends Fragment {
 
     public void whenStopFlipService() {
         fadeBackgroundColor(false);
-        motivateText.setText("Just do it.");
+        motivateText.setText(Quotes.getRandomQuote());
         changeTextColor(false);
     }
 

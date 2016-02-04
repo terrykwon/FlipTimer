@@ -13,6 +13,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -38,18 +39,32 @@ public class FlipService extends Service implements SensorEventListener{
     private boolean threadContinue;
 
     private boolean isFaceUp;
-    private WriteTimeTask mWriteTimeTask;
 
     private Notification mNotification;
 
     private TimeDbHelper dbHelper;
 
     LocalBroadcastManager broadcaster;
+    Vibrator vibrator;
+
+    // for RecordFragment
     static final public String TIME_RECORDED = "com.terrykwon.flipservice.TIME_RECORDED";
+
+    // Broadcast intent to stop Service
     static final public String SERVICE_STOPPED = "com.terrykwon.flipservice.SERVICE_STOPPED";
 
     private final int WORKING = 1;
     private final int NWORKING = 0;
+
+
+    protected BroadcastReceiver stopServiceReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent serviceStoppedIntent = new Intent(TimerFragment.FLIPSERVICE_STOPPED);
+            broadcaster.sendBroadcast(serviceStoppedIntent);
+            stopSelf();
+        }
+    };
 
     @Override
     public void onCreate() {
@@ -57,6 +72,7 @@ public class FlipService extends Service implements SensorEventListener{
         Log.v(LOG_TAG, "FlipService onCreate().");
 
         broadcaster = LocalBroadcastManager.getInstance(this);
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     public void sendResult() {
@@ -102,20 +118,26 @@ public class FlipService extends Service implements SensorEventListener{
         if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER) {
             return;
         }
+        float z = event.values[2];
+
+        //debug
+        Log.v(String.valueOf(z), LOG_TAG);
 
         if (isFaceUp) {
-            if (event.values[2] < 0) {
+
+            // TODO: BETTER RANGE
+            if (z > -11 && z < -8.5) {
+                vibrator.vibrate(500);
                 Log.v(LOG_TAG, "SENSOR FACE DOWN");
                 isFaceUp = false;
-                mWriteTimeTask = new WriteTimeTask(this);
                 recordTime(WORKING);
                 sendResult();
             }
         } else {
-            if (event.values[2] > 0) {
+            if (z > 8.5 && z < 11) {
+                vibrator.vibrate(500);
                 Log.v(LOG_TAG, "SENSOR FACE UP");
                 isFaceUp = true;
-                mWriteTimeTask = new WriteTimeTask(this);
                 recordTime(NWORKING);
                 sendResult();
             }
@@ -133,6 +155,12 @@ public class FlipService extends Service implements SensorEventListener{
 
         dbHelper.insertData(time, status);
 //        mWriteTimeTask.execute(timeString, status);
+    }
+
+    private String getTime() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        return formatter.format(calendar.getTime());
     }
 
     @Override
@@ -163,15 +191,6 @@ public class FlipService extends Service implements SensorEventListener{
         builder.addAction(R.drawable.ic_stop_white_48dp, "Stop", pi);
         mNotification = builder.build();
     }
-
-    protected BroadcastReceiver stopServiceReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Intent serviceStoppedIntent = new Intent(TimerFragment.FLIPSERVICE_STOPPED);
-            broadcaster.sendBroadcast(serviceStoppedIntent);
-            stopSelf();
-        }
-    };
 
     public long StringToMillis(String stringTime) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");

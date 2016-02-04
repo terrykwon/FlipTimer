@@ -47,10 +47,8 @@ public class TimeAdapter extends CursorAdapter{
                     cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_STATUS));
 
         if (status == 1) {
-            view.setBackgroundColor(Color.parseColor("#cdff99"));
             tvStatus.setText(mWorking);
         } else {
-            view.setBackgroundColor(Color.parseColor("#ffcccc"));
             tvStatus.setText(mNotWorking);
         }
 
@@ -58,7 +56,7 @@ public class TimeAdapter extends CursorAdapter{
 
         long intervalMillis = cursor.getLong(
                 cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_WORKTIME));
-        tvInterval.setText(millisIntervalToString(intervalMillis));
+        tvInterval.setText("Session Length: " + millisIntervalToString(intervalMillis));
     }
 
     public String millisToString(long millis) {
