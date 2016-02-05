@@ -20,8 +20,8 @@ import java.util.Date;
  */
 public class TimeAdapter extends CursorAdapter{
 
-    private final String mWorking = "START";
-    private final String mNotWorking = "STOP";
+    private final String mWorking = "STARTED";
+    private final String mNotWorking = "STOPPED";
 
     public TimeAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
@@ -39,36 +39,29 @@ public class TimeAdapter extends CursorAdapter{
         TextView tvStatus = (TextView) view.findViewById(R.id.list_item_status_textview);
         TextView tvInterval = (TextView) view.findViewById(R.id.list_item_interval_textview);
 
-        Long timeMillis = cursor.getLong(
+        Long timeSeconds = cursor.getLong(
                     cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_TIME));
-        String time = millisToString(timeMillis);
+        String time = Time.secondsToTime(timeSeconds);
 
         int status = cursor.getInt(
-                    cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_STATUS));
+                cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_STATUS));
+
+        long intervalSeconds = cursor.getLong(
+                cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_WORKTIME));
 
         if (status == 1) {
             tvStatus.setText(mWorking);
+            tvStatus.setTextColor(Color.parseColor("#00cc66"));
+            tvInterval.setText("Stop Interval: " + Time.formatInterval(intervalSeconds));
         } else {
             tvStatus.setText(mNotWorking);
+            tvStatus.setTextColor(Color.parseColor("#ff0000"));
+            tvInterval.setText("Work Interval: " + Time.formatInterval(intervalSeconds));
         }
 
         tvTime.setText(time);
 
-        long intervalMillis = cursor.getLong(
-                cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_WORKTIME));
-        tvInterval.setText("Session Length: " + millisIntervalToString(intervalMillis));
-    }
 
-    public String millisToString(long millis) {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        Date date = new Date(millis);
-        return timeFormat.format(date);
-    }
-
-    public String millisIntervalToString(long millis) {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("mm:ss");
-        Date date = new Date(millis);
-        return timeFormat.format(millis);
     }
 
 

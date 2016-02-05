@@ -40,17 +40,6 @@ public class TimeDbHelper extends SQLiteOpenHelper{
     }
 
 
-//    // when time is a String i.e) HH:MM:SS
-//    public boolean insertData(String time, int status) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(TimeContract.TimeEntry.COLUMN_TIME, time);
-//        contentValues.put(TimeContract.TimeEntry.COLUMN_STATUS, status);
-//
-//        long result = db.insert(TimeContract.TimeEntry.TABLE_NAME, null, contentValues);
-//        return (result != -1);
-//    }
-
     // when time is in millis (long)
     public boolean insertData(long time, int status) {
         SQLiteDatabase db = this.getWritableDatabase();

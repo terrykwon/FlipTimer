@@ -146,21 +146,11 @@ public class FlipService extends Service implements SensorEventListener{
 
     // Gets current time, converts it to string, and records it in DB via a WriteTimeTask.
     private void recordTime(int status) {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        String timeString = formatter.format(calendar.getTime());
+        Time currentTime = new Time();
 
-        long time = StringToMillis(timeString);
-        // pretty inefficient because converting time twice.
+        long time = currentTime.getTimeInSeconds();
 
         dbHelper.insertData(time, status);
-//        mWriteTimeTask.execute(timeString, status);
-    }
-
-    private String getTime() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        return formatter.format(calendar.getTime());
     }
 
     @Override
@@ -192,16 +182,6 @@ public class FlipService extends Service implements SensorEventListener{
         mNotification = builder.build();
     }
 
-    public long StringToMillis(String stringTime) {
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        long millisTime = 0;
-        try {
-            Date parsedDate = formatter.parse(stringTime);
-            millisTime = parsedDate.getTime();
-        } catch (ParseException e) {
-            Log.v(LOG_TAG, "Exception Thrown: " + e);
-        }
-        return millisTime;
-    }
+
 
 }

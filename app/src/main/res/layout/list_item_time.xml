@@ -6,22 +6,6 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:background="@android:color/darker_gray"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/list_item_interval_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@android:color/white"
-            android:text="Time Studied: 50 minutes" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="48dp"
         android:gravity="center">
 
@@ -31,7 +15,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="START"
+            android:text="STARTED"
+            android:fontFamily="sans-serif-condensed"
+            android:textStyle="bold"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -43,6 +29,22 @@
             android:text="16:45:27"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:fontFamily="sans-serif-light"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:background="@android:color/darker_gray"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/list_item_interval_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/white"
+            android:text="Time Studied: 50 minutes" />
 
     </LinearLayout>
 
