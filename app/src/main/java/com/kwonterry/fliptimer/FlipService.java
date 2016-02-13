@@ -1,7 +1,6 @@
 package com.kwonterry.fliptimer;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -13,6 +12,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -21,11 +21,18 @@ import android.util.Log;
 
 import com.kwonterry.fliptimer.data.TimeDbHelper;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
+/**
+ * A foreground Service that monitors device's accelerometer.
+ * When device is flipped face up / down, records
+ *  1) the current time in database,
+ *  2) whether face up (not working) or face down (working)
+ * in database.
+ *
+ * Uses a background thread with a runnable.
+ * Sends a BroadcastIntent to notify RecordFragment that new time has been recorded.
+ * Uses a Wakelock so time can be recorded while screen is off.
+ */
 public class FlipService extends Service implements SensorEventListener{
 
     private final String LOG_TAG = FlipService.class.getSimpleName();
@@ -35,8 +42,8 @@ public class FlipService extends Service implements SensorEventListener{
     private Sensor mSensor;
     private SensorManager mManager;
 
-    // to stop Thread. No idea.
-    private boolean threadContinue;
+    // to stop Thread.
+    private volatile boolean threadContinue = true;
 
     private boolean isFaceUp;
 
@@ -44,24 +51,31 @@ public class FlipService extends Service implements SensorEventListener{
 
     private TimeDbHelper dbHelper;
 
-    LocalBroadcastManager broadcaster;
+    LocalBroadcastManager notifyBroadcaster;
     Vibrator vibrator;
 
-    // for RecordFragment
+    // BroadCastIntent for RecordFragment refresh new data.
     static final public String TIME_RECORDED = "com.terrykwon.flipservice.TIME_RECORDED";
 
-    // Broadcast intent to stop Service
+    // BroadcastIntent for notification to stop Service
     static final public String SERVICE_STOPPED = "com.terrykwon.flipservice.SERVICE_STOPPED";
 
     private final int WORKING = 1;
     private final int NWORKING = 0;
 
+    private PowerManager.WakeLock mWakeLock;
+    static final String WAKELOCK_TAG = "com.terrykwon.flipservice.WAKELOG_TAG";
 
+    private static boolean isRunning = false;
+
+
+    // Detects when stop action is pressed from notification.
+    // Sends a BroadCastIntent to TimerFragment to notify that service stopped.
     protected BroadcastReceiver stopServiceReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Intent serviceStoppedIntent = new Intent(TimerFragment.FLIPSERVICE_STOPPED);
-            broadcaster.sendBroadcast(serviceStoppedIntent);
+            notifyBroadcaster.sendBroadcast(serviceStoppedIntent);
             stopSelf();
         }
     };
@@ -71,18 +85,24 @@ public class FlipService extends Service implements SensorEventListener{
         super.onCreate();
         Log.v(LOG_TAG, "FlipService onCreate().");
 
-        broadcaster = LocalBroadcastManager.getInstance(this);
+        notifyBroadcaster = LocalBroadcastManager.getInstance(this);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
+    // Sends time. RecordFragment receives it.
     public void sendResult() {
         Intent intent = new Intent(TIME_RECORDED);
-        broadcaster.sendBroadcast(intent);
+        notifyBroadcaster.sendBroadcast(intent);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(LOG_TAG, "FlipService onStartCommand().");
+
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                WAKELOCK_TAG);
+        mWakeLock.acquire();
 
         mManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -104,6 +124,7 @@ public class FlipService extends Service implements SensorEventListener{
         buildNotification();
         startForeground(123, mNotification);
 
+        isRunning = true;
         return Service.START_STICKY;
     }
 
@@ -121,11 +142,9 @@ public class FlipService extends Service implements SensorEventListener{
         float z = event.values[2];
 
         //debug
-        Log.v(String.valueOf(z), LOG_TAG);
+        //Log.v(String.valueOf(z), LOG_TAG);
 
         if (isFaceUp) {
-
-            // TODO: BETTER RANGE
             if (z > -11 && z < -8.5) {
                 vibrator.vibrate(500);
                 Log.v(LOG_TAG, "SENSOR FACE DOWN");
@@ -144,10 +163,10 @@ public class FlipService extends Service implements SensorEventListener{
         }
     }
 
-    // Gets current time, converts it to string, and records it in DB via a WriteTimeTask.
+    // Gets current time, converts it to string, and records it in database.
     private void recordTime(int status) {
-        Time currentTime = new Time();
 
+        Time currentTime = new Time();
         long time = currentTime.getTimeInSeconds();
 
         dbHelper.insertData(time, status);
@@ -156,8 +175,14 @@ public class FlipService extends Service implements SensorEventListener{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        threadContinue = false;
+
         mManager.unregisterListener(this, mSensor);
+        mWakeLock.release();
         unregisterReceiver(stopServiceReceiver);
+
+        isRunning = false;
+
         Log.v(LOG_TAG, "FlipService onDestroy().");
     }
 
@@ -166,11 +191,19 @@ public class FlipService extends Service implements SensorEventListener{
 
     }
 
-    // Build Notification
+    // A notification with an icon, title, description, and stop button.
     public void buildNotification() {
+
+        // Register local BroadcastReceiver.
         registerReceiver(stopServiceReceiver, new IntentFilter(SERVICE_STOPPED));
-        PendingIntent pi = PendingIntent.getBroadcast(this, 0,
+
+        // A PendingIntent sent to notify FlipService that stop action has been called.
+        PendingIntent serviceStopIntent = PendingIntent.getBroadcast(this, 0,
                 new Intent(SERVICE_STOPPED),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        PendingIntent launchActivityIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, MainActivity.class),
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
@@ -178,8 +211,13 @@ public class FlipService extends Service implements SensorEventListener{
         builder.setContentTitle("Flip Timer Running");
         builder.setContentText("Time recorded when phone flipped face down/up.");
         builder.setSmallIcon(R.drawable.ic_alarm_white);
-        builder.addAction(R.drawable.ic_stop_white_48dp, "Stop", pi);
+        builder.addAction(R.drawable.ic_stop_white_48dp, "Stop", serviceStopIntent);
+        builder.setContentIntent(launchActivityIntent);
         mNotification = builder.build();
+    }
+
+    public static boolean IsRunning() {
+        return isRunning;
     }
 
 

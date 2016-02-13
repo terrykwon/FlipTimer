@@ -51,12 +51,6 @@ public class MainActivity extends AppCompatActivity implements
 
             }
         });
-
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.container, new TimerFragment())
-//                    .commit();
-//        }
     }
 
     @Override

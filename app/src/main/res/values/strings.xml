@@ -2,12 +2,11 @@
     <string name="app_name">FlipTimer</string>
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="timer_holder">TIMER</string>
-    <string name="button_view">View Log</string>
-    <string name="list_time">TIME</string>
-    <string name="list_status">STATUS</string>
+    <string name="press_start">Press START to begin session.</string>
+    <string name="started">STARTED</string>
+    <string name="stopped">STOPPED</string>
+    <string name="session_started">Session Started</string>
+    <string name="work_interval">Work Interval: </string>
+    <string name="stop_interval">Stop Interval: </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

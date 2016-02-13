@@ -6,8 +6,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * Created by Terry Kwon on 2/5/2016.
+ * New instance of class gets the current time.
+ * Contains utility methods to format time and time intervals.
  */
+
 public class Time {
 
     private GregorianCalendar currentCalendar;
@@ -23,6 +25,8 @@ public class Time {
         return timeInMillis / 1000;
     }
 
+
+    // Unused
     public String getTimeString() {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 

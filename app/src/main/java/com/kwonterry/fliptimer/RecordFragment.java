@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -46,6 +47,7 @@ public class RecordFragment extends Fragment {
 
     // to close cursor, declare member
     private Cursor mCursor;
+    private ListView recordListView;
 
     private BroadcastReceiver receiver;
 
@@ -70,32 +72,10 @@ public class RecordFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 Log.v(LOG_TAG, "Broadcast Intent Received.");
                 mTimeAdapter.swapCursor(mTimeDbHelper.getAllData());
-                mTimeAdapter.notifyDataSetChanged();
+                recordListView.smoothScrollToPosition(0);
             }
         };
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_clear) {
-            Log.v(LOG_TAG, "Log Cleared.");
-
-            // Delete database.
-            mTimeDbHelper.removeAll();
-
-            // Clear screen
-            mTimeAdapter.swapCursor(mTimeDbHelper.getAllData());
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -107,19 +87,19 @@ public class RecordFragment extends Fragment {
         mTimeDbHelper = new TimeDbHelper(getContext());
         mCursor = mTimeDbHelper.getAllData();
 
-
         mTimeAdapter = new TimeAdapter(getContext(), mCursor, 0);
 
-        ListView listView = (ListView) RecordView.findViewById(R.id.listview_log);
-        listView.setAdapter(mTimeAdapter);
+        recordListView = (ListView) RecordView.findViewById(R.id.listview_log);
+        recordListView.setAdapter(mTimeAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) RecordView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Snackbar.make(v, "Log Cleared", Snackbar.LENGTH_SHORT).show();
                 mTimeDbHelper.removeAll();
                 mTimeAdapter.swapCursor(mTimeDbHelper.getAllData());
-                // doesn't refresh the list!!!!!
+
             }
         });
 
@@ -157,6 +137,8 @@ public class RecordFragment extends Fragment {
         LocalBroadcastManager.getInstance(getContext()).registerReceiver((receiver),
                 new IntentFilter(FlipService.TIME_RECORDED)
         );
+        mTimeAdapter.swapCursor(mTimeDbHelper.getAllData());
+        recordListView.smoothScrollToPosition(0);
     }
 
     @Override

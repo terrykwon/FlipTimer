@@ -15,8 +15,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/motivation_text"
-        android:text="Impossible is nothing."
         android:fontFamily="sans-serif-condensed"
+        android:text="Press START to begin session."
         android:textColor="@android:color/black"/>
 
     <LinearLayout

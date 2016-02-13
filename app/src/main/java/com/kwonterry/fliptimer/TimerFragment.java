@@ -2,6 +2,7 @@ package com.kwonterry.fliptimer;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,7 +43,11 @@ public class TimerFragment extends Fragment {
     private BroadcastReceiver receiver;
 
     private ToggleButton startServiceToggle;
+
     static final public String FLIPSERVICE_STOPPED = "com.terrykwon.fliptimer.FLIPSERVICE_STOPPED";
+
+    static final String STATE_SERVICE = "serviceState";
+    private int serviceRunning;
 
     public TimerFragment() {
         // Required empty public constructor
@@ -66,6 +72,11 @@ public class TimerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            serviceRunning = savedInstanceState.getInt(STATE_SERVICE);
+        }
+
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -78,7 +89,6 @@ public class TimerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         View TimerView = inflater.inflate(R.layout.fragment_timer, container, false);
         mTextClock = (TextClock) TimerView.findViewById(R.id.textClock);
@@ -100,12 +110,18 @@ public class TimerFragment extends Fragment {
             }
         });
 
+        if (FlipService.IsRunning()) {
+            startServiceToggle.setChecked(true);
+        } else {
+            startServiceToggle.setChecked(false);
+        }
+
         return TimerView;
     }
 
     public void whenStartFlipService() {
         fadeBackgroundColor(true);
-        motivateText.setText("flip phone face down and work.");
+        motivateText.setText("Flip phone face down and work.");
         changeTextColor(true);
     }
 
@@ -128,14 +144,8 @@ public class TimerFragment extends Fragment {
                     mBackground, "backgroundColor",
                     new ArgbEvaluator(), Color.argb(255, 37, 49, 55), 0xffF9F9F9);
         }
-        colorFade.setDuration(3000);
+        colorFade.setDuration(2000);
         colorFade.start();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
     }
 
     public void changeTextColor(boolean turnOn) {
@@ -148,12 +158,19 @@ public class TimerFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
