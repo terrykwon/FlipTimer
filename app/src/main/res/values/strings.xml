@@ -8,5 +8,6 @@
     <string name="session_started">Session Started</string>
     <string name="work_interval">Work Interval: </string>
     <string name="stop_interval">Stop Interval: </string>
+    <string name="flip_phone">Flip phone face down and work.</string>
 
 </resources>

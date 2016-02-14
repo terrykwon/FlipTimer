@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -40,6 +41,8 @@ public class TimerFragment extends Fragment {
     private TextClock mTextClock;
     private View mBackground;
     private TextView motivateText;
+    private TabLayout tabBar;
+
     private BroadcastReceiver receiver;
 
     private ToggleButton startServiceToggle;
@@ -94,6 +97,7 @@ public class TimerFragment extends Fragment {
         mTextClock = (TextClock) TimerView.findViewById(R.id.textClock);
         mBackground = TimerView.findViewById(R.id.layout_timer);
         motivateText = (TextView) TimerView.findViewById(R.id.motivation_text);
+        tabBar = (TabLayout) getActivity().findViewById(R.id.tab_layout);
 
         startServiceToggle = (ToggleButton) TimerView.findViewById(R.id.toggle_service);
         startServiceToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -121,40 +125,57 @@ public class TimerFragment extends Fragment {
 
     public void whenStartFlipService() {
         fadeBackgroundColor(true);
-        motivateText.setText("Flip phone face down and work.");
+        motivateText.setText(R.string.flip_phone);
         changeTextColor(true);
     }
 
     public void whenStopFlipService() {
         fadeBackgroundColor(false);
-        motivateText.setText(Quotes.getRandomQuote());
+        motivateText.setText(R.string.press_start);
         changeTextColor(false);
     }
 
     public void fadeBackgroundColor(boolean turnOn) {
-        ObjectAnimator colorFade;
+        ObjectAnimator backgroundColorFade;
+        ObjectAnimator tabColorFade;
         if (turnOn) {
-            colorFade = ObjectAnimator.ofObject(
+            backgroundColorFade = ObjectAnimator.ofObject(
                     mBackground, "backgroundColor",
-                    new ArgbEvaluator(),0xffF9F9F9
-                    , Color.argb(255, 37, 49, 55));
+                    new ArgbEvaluator(),
+                    ContextCompat.getColor(getContext(), R.color.colorPrimary),
+                    ContextCompat.getColor(getContext(), R.color.colorLightBlack));
+            tabColorFade = ObjectAnimator.ofObject(
+                    tabBar, "backgroundColor",
+                    new ArgbEvaluator(),
+                    ContextCompat.getColor(getContext(), R.color.colorPrimary),
+                    ContextCompat.getColor(getContext(), R.color.colorLightBlack));
 
         } else {
-            colorFade = ObjectAnimator.ofObject(
+            backgroundColorFade = ObjectAnimator.ofObject(
                     mBackground, "backgroundColor",
-                    new ArgbEvaluator(), Color.argb(255, 37, 49, 55), 0xffF9F9F9);
+                    new ArgbEvaluator(),
+                    ContextCompat.getColor(getContext(), R.color.colorLightBlack),
+                    ContextCompat.getColor(getContext(), R.color.colorPrimary));
+            tabColorFade = ObjectAnimator.ofObject(
+                    tabBar, "backgroundColor",
+                    new ArgbEvaluator(),
+                    ContextCompat.getColor(getContext(), R.color.colorLightBlack),
+                    ContextCompat.getColor(getContext(), R.color.colorPrimary));
         }
-        colorFade.setDuration(2000);
-        colorFade.start();
+        backgroundColorFade.setDuration(2000);
+        tabColorFade.setDuration(2000);
+
+        backgroundColorFade.start();
+        tabColorFade.start();
     }
 
     public void changeTextColor(boolean turnOn) {
         if (turnOn) {
-            mTextClock.setTextColor(Color.parseColor("#FFFFFF"));
-            motivateText.setTextColor(Color.parseColor("#FFFFFF"));
+//            mTextClock.setTextColor(ContextCompat.getColor(getContext(), R.color.colorDarkerGrey));
+            //motivateText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorLightBlack));
         } else {
-            mTextClock.setTextColor(Color.parseColor("#000000"));
-            motivateText.setTextColor(Color.parseColor("#000000"));
+//            mTextClock.setTextColor(ContextCompat.getColor(getContext(), R.color.colorWhite));
+            //motivateText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorWhite));
         }
     }
 

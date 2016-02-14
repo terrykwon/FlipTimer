@@ -6,6 +6,7 @@
     android:id="@+id/layout_timer"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="@color/colorPrimary"
     android:padding="16dp">
 
     <TextView
@@ -15,9 +16,9 @@
         android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/motivation_text"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="sans-serif-light"
         android:text="Press START to begin session."
-        android:textColor="@android:color/black"/>
+        android:textColor="@color/colorWhite"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,14 +39,15 @@
 
 
     <TextClock
+        android:textColor="@color/colorWhite"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:format12Hour="HH:mm:ss"
         android:id="@+id/textClock"
-        android:fontFamily="sans-serif-condensed"
-        android:textSize="45sp"
-        android:gravity="center"
+        android:fontFamily="sans-serif-thin"
+        android:textSize="88sp"
+        android:gravity="center|bottom"
         tools:targetApi="jelly_bean_mr1" />
 
 

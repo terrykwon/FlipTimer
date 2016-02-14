@@ -23,12 +23,12 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_alarm_white));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_list_white));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_alarm_white_36dp));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_list_white_36dp));
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());

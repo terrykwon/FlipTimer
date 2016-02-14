@@ -91,8 +91,10 @@ public class TimeAdapter extends CursorAdapter{
         if (cursor.isFirst() && cursor.isLast()) {
             tvInterval.setText(R.string.session_started);
             statusContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
         } else if (cursor.isFirst()) {
             statusContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.colorDarkGrey));
+            tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
         } else if (cursor.isLast()) {
             tvInterval.setText(R.string.session_started);
             statusContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));

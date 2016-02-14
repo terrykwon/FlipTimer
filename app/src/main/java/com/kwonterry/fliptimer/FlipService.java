@@ -210,7 +210,7 @@ public class FlipService extends Service implements SensorEventListener{
         builder.setAutoCancel(true);
         builder.setContentTitle("Flip Timer Running");
         builder.setContentText("Time recorded when phone flipped face down/up.");
-        builder.setSmallIcon(R.drawable.ic_alarm_white);
+        builder.setSmallIcon(R.drawable.notification_icon);
         builder.addAction(R.drawable.ic_stop_white_48dp, "Stop", serviceStopIntent);
         builder.setContentIntent(launchActivityIntent);
         mNotification = builder.build();
