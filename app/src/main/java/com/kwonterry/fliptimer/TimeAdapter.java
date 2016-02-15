@@ -76,34 +76,59 @@ public class TimeAdapter extends CursorAdapter{
         long intervalSeconds = cursor.getLong(
                 cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_WORKTIME));
 
-        if (status == 1) {
-            tvStatus.setText(R.string.started);
-            tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorGreen));
-
-            // use Strings with placeholders instead.
-            tvInterval.setText("Stop Interval: " + Time.formatInterval(intervalSeconds));
-        } else {
-            tvStatus.setText(R.string.stopped);
-            tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorRed));
-            tvInterval.setText("Work Interval: " + Time.formatInterval(intervalSeconds));
-        }
 
         if (cursor.isFirst() && cursor.isLast()) {
             tvInterval.setText(R.string.session_started);
             statusContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
             tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+
+            if (status == 1) {
+                tvStatus.setText(R.string.started);
+            } else {
+                tvStatus.setText(R.string.stopped);
+            }
+
         } else if (cursor.isFirst()) {
             statusContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.colorDarkGrey));
             tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+
+            if (status == 1) {
+                tvStatus.setText(R.string.started);
+                tvInterval.setText("Stop Interval: " + Time.formatInterval(intervalSeconds));
+            } else {
+                tvStatus.setText(R.string.stopped);
+                tvInterval.setText("Work Interval: " + Time.formatInterval(intervalSeconds));
+            }
+
         } else if (cursor.isLast()) {
             tvInterval.setText(R.string.session_started);
             statusContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
+
+            if (status == 1) {
+                tvStatus.setText(R.string.started);
+                tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorGreen));
+            } else {
+                tvStatus.setText(R.string.stopped);
+                tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorRed));
+            }
+
         } else {
             statusContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.colorGrey));
+
+            if (status == 1) {
+                tvStatus.setText(R.string.started);
+                tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorGreen));
+
+                // use Strings with placeholders instead.
+                tvInterval.setText("Stop Interval: " + Time.formatInterval(intervalSeconds));
+            } else {
+                tvStatus.setText(R.string.stopped);
+                tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorRed));
+                tvInterval.setText("Work Interval: " + Time.formatInterval(intervalSeconds));
+            }
         }
 
         tvTime.setText(time);
-
 
     }
 

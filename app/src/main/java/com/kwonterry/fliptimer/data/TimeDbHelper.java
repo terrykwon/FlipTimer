@@ -87,6 +87,7 @@ public class TimeDbHelper extends SQLiteOpenHelper{
     public void removeAll() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TimeContract.TimeEntry.TABLE_NAME, null, null);
+        db.close();
     }
 
 }

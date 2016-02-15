@@ -38,7 +38,7 @@ public class TimerFragment extends Fragment {
     private final String LOG_TAG = TimerFragment.class.getSimpleName();
 
     private OnFragmentInteractionListener mListener;
-    private TextClock mTextClock;
+//    private TextClock mTextClock;
     private View mBackground;
     private TextView motivateText;
     private TabLayout tabBar;
@@ -47,10 +47,7 @@ public class TimerFragment extends Fragment {
 
     private ToggleButton startServiceToggle;
 
-    static final public String FLIPSERVICE_STOPPED = "com.terrykwon.fliptimer.FLIPSERVICE_STOPPED";
-
-    static final String STATE_SERVICE = "serviceState";
-    private int serviceRunning;
+    static final public String FLIPSERVICE_STOPPED = "com.kwonterry.fliptimer.FLIPSERVICE_STOPPED";
 
     public TimerFragment() {
         // Required empty public constructor
@@ -59,8 +56,15 @@ public class TimerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (FlipService.IsRunning()) {
+            startServiceToggle.setChecked(true);
+        } else {
+            startServiceToggle.setChecked(false);
+        }
+
         LocalBroadcastManager.getInstance(getContext()).registerReceiver((receiver),
-                new IntentFilter("com.terrykwon.fliptimer.FLIPSERVICE_STOPPED"));
+                new IntentFilter(FLIPSERVICE_STOPPED));
     }
 
     // TODO: Rename and change types and number of parameters
@@ -76,10 +80,6 @@ public class TimerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null) {
-            serviceRunning = savedInstanceState.getInt(STATE_SERVICE);
-        }
-
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -94,7 +94,7 @@ public class TimerFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View TimerView = inflater.inflate(R.layout.fragment_timer, container, false);
-        mTextClock = (TextClock) TimerView.findViewById(R.id.textClock);
+//        mTextClock = (TextClock) TimerView.findViewById(R.id.textClock);
         mBackground = TimerView.findViewById(R.id.layout_timer);
         motivateText = (TextView) TimerView.findViewById(R.id.motivation_text);
         tabBar = (TabLayout) getActivity().findViewById(R.id.tab_layout);
@@ -114,25 +114,19 @@ public class TimerFragment extends Fragment {
             }
         });
 
-        if (FlipService.IsRunning()) {
-            startServiceToggle.setChecked(true);
-        } else {
-            startServiceToggle.setChecked(false);
-        }
-
         return TimerView;
     }
 
     public void whenStartFlipService() {
         fadeBackgroundColor(true);
         motivateText.setText(R.string.flip_phone);
-        changeTextColor(true);
+//        changeTextColor(true);
     }
 
     public void whenStopFlipService() {
         fadeBackgroundColor(false);
         motivateText.setText(R.string.press_start);
-        changeTextColor(false);
+//        changeTextColor(false);
     }
 
     public void fadeBackgroundColor(boolean turnOn) {
@@ -169,15 +163,15 @@ public class TimerFragment extends Fragment {
         tabColorFade.start();
     }
 
-    public void changeTextColor(boolean turnOn) {
-        if (turnOn) {
+//    public void changeTextColor(boolean turnOn) {
+//        if (turnOn) {
 //            mTextClock.setTextColor(ContextCompat.getColor(getContext(), R.color.colorDarkerGrey));
-            //motivateText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorLightBlack));
-        } else {
+//            motivateText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorLightBlack));
+//        } else {
 //            mTextClock.setTextColor(ContextCompat.getColor(getContext(), R.color.colorWhite));
-            //motivateText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorWhite));
-        }
-    }
+//            motivateText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorWhite));
+//        }
+//    }
 
     @Override
     public void onPause() {

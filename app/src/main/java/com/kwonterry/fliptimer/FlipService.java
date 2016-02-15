@@ -55,16 +55,16 @@ public class FlipService extends Service implements SensorEventListener{
     Vibrator vibrator;
 
     // BroadCastIntent for RecordFragment refresh new data.
-    static final public String TIME_RECORDED = "com.terrykwon.flipservice.TIME_RECORDED";
+    static final public String TIME_RECORDED = "com.kwonterry.flipservice.TIME_RECORDED";
 
     // BroadcastIntent for notification to stop Service
-    static final public String SERVICE_STOPPED = "com.terrykwon.flipservice.SERVICE_STOPPED";
+    static final public String SERVICE_STOPPED = "com.kwonterry.flipservice.SERVICE_STOPPED";
 
     private final int WORKING = 1;
     private final int NWORKING = 0;
 
     private PowerManager.WakeLock mWakeLock;
-    static final String WAKELOCK_TAG = "com.terrykwon.flipservice.WAKELOG_TAG";
+    static final String WAKELOCK_TAG = "com.kwonterry.flipservice.WAKELOG_TAG";
 
     private static boolean isRunning = false;
 
@@ -87,6 +87,12 @@ public class FlipService extends Service implements SensorEventListener{
 
         notifyBroadcaster = LocalBroadcastManager.getInstance(this);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                WAKELOCK_TAG);
+        mWakeLock.setReferenceCounted(false);
+        mWakeLock.acquire();
     }
 
     // Sends time. RecordFragment receives it.
@@ -98,11 +104,6 @@ public class FlipService extends Service implements SensorEventListener{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(LOG_TAG, "FlipService onStartCommand().");
-
-        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                WAKELOCK_TAG);
-        mWakeLock.acquire();
 
         mManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -180,6 +181,7 @@ public class FlipService extends Service implements SensorEventListener{
         mManager.unregisterListener(this, mSensor);
         mWakeLock.release();
         unregisterReceiver(stopServiceReceiver);
+        dbHelper.close();
 
         isRunning = false;
 
