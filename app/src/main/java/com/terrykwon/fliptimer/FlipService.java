@@ -1,4 +1,4 @@
-package com.kwonterry.fliptimer;
+package com.terrykwon.fliptimer;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -19,7 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.kwonterry.fliptimer.data.TimeDbHelper;
+import com.terrykwon.fliptimer.data.TimeDbHelper;
 
 
 /**
@@ -49,25 +49,30 @@ public class FlipService extends Service implements SensorEventListener{
 
     private Notification mNotification;
 
-    private TimeDbHelper dbHelper;
-
     LocalBroadcastManager notifyBroadcaster;
     Vibrator vibrator;
 
     // BroadCastIntent for RecordFragment refresh new data.
-    static final public String TIME_RECORDED = "com.kwonterry.flipservice.TIME_RECORDED";
+    static final public String TIME_RECORDED = "com.terrykwon.flipservice.TIME_RECORDED";
 
     // BroadcastIntent for notification to stop Service
-    static final public String SERVICE_STOPPED = "com.kwonterry.flipservice.SERVICE_STOPPED";
+    static final public String SERVICE_STOPPED = "com.terrykwon.flipservice.SERVICE_STOPPED";
 
-    private final int WORKING = 1;
-    private final int NWORKING = 0;
+    private static final int WORKING = 1;
+    private static final int NWORKING = 0;
 
     private PowerManager.WakeLock mWakeLock;
-    static final String WAKELOCK_TAG = "com.kwonterry.flipservice.WAKELOG_TAG";
+    static final String WAKELOCK_TAG = "com.terrykwon.flipservice.WAKELOG_TAG";
 
     private static boolean isRunning = false;
 
+    // because SensorManager.SENSOR_DELAY_NORMAL = 3 milliseconds and not really necessary.
+    // but this is only maximum delay - always samples faster
+    private static final int SENSOR_DELAY_SLOW = 100;
+
+    // to prevent random fluctuations
+    int count;
+    private static final int COUNT_THRESHHOLD = 100;
 
     // Detects when stop action is pressed from notification.
     // Sends a BroadCastIntent to TimerFragment to notify that service stopped.
@@ -107,14 +112,14 @@ public class FlipService extends Service implements SensorEventListener{
 
         mManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        isFaceUp = true;
 
-        dbHelper = new TimeDbHelper(this);
+        isFaceUp = true;
+        count = 0;
 
         mRunnable = new Runnable() {
             @Override
             public void run() {
-                mManager.registerListener(FlipService.this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                mManager.registerListener(FlipService.this, mSensor, SENSOR_DELAY_SLOW);
                 Log.v(LOG_TAG, "SensorEventListener Registered.");
             }
         };
@@ -146,20 +151,37 @@ public class FlipService extends Service implements SensorEventListener{
         //Log.v(String.valueOf(z), LOG_TAG);
 
         if (isFaceUp) {
-            if (z > -11 && z < -8.5) {
-                vibrator.vibrate(500);
-                Log.v(LOG_TAG, "SENSOR FACE DOWN");
-                isFaceUp = false;
-                recordTime(WORKING);
-                sendResult();
+            if (z > -12 && z < -8.5) {
+
+                if (count == COUNT_THRESHHOLD) {
+                    vibrator.vibrate(500);
+                    //Log.v(LOG_TAG, "SENSOR FACE DOWN");
+                    isFaceUp = false;
+                    recordTime(WORKING);
+                    sendResult();
+                    count = 0;
+                } else {
+                    count += 1;
+                    //Log.v(LOG_TAG, String.valueOf(count));
+                }
+            } else {
+                count = 0;
             }
         } else {
-            if (z > 8.5 && z < 11) {
-                vibrator.vibrate(500);
-                Log.v(LOG_TAG, "SENSOR FACE UP");
-                isFaceUp = true;
-                recordTime(NWORKING);
-                sendResult();
+            if (z > 6.5 && z < 12) {
+                if (count == COUNT_THRESHHOLD) {
+                    vibrator.vibrate(500);
+                    //Log.v(LOG_TAG, "SENSOR FACE UP");
+                    isFaceUp = true;
+                    recordTime(NWORKING);
+                    sendResult();
+                    count = 0;
+                } else {
+                    count += 1;
+                    //Log.v(LOG_TAG, String.valueOf(count));
+                }
+            } else {
+                count = 0;
             }
         }
     }
@@ -167,21 +189,22 @@ public class FlipService extends Service implements SensorEventListener{
     // Gets current time, converts it to string, and records it in database.
     private void recordTime(int status) {
 
+        TimeDbHelper dbHelper = TimeDbHelper.getInstance(this);
         Time currentTime = new Time();
         long time = currentTime.getTimeInSeconds();
 
         dbHelper.insertData(time, status);
+        dbHelper.close();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        threadContinue = false;
+        //threadContinue = false;
 
         mManager.unregisterListener(this, mSensor);
         mWakeLock.release();
         unregisterReceiver(stopServiceReceiver);
-        dbHelper.close();
 
         isRunning = false;
 
@@ -204,16 +227,18 @@ public class FlipService extends Service implements SensorEventListener{
                 new Intent(SERVICE_STOPPED),
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Intent launchIntent = new Intent(this, MainActivity.class);
+        launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent launchActivityIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class),
+                launchIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setAutoCancel(true);
-        builder.setContentTitle("Flip Timer Running");
-        builder.setContentText("Time recorded when phone flipped face down/up.");
+        builder.setContentTitle(getString(R.string.service_running));
+        builder.setContentText(getString(R.string.time_recorded));
         builder.setSmallIcon(R.drawable.notification_icon);
-        builder.addAction(R.drawable.ic_stop_white_48dp, "Stop", serviceStopIntent);
+        builder.addAction(R.drawable.ic_stop_white_48dp, getString(R.string.stop), serviceStopIntent);
         builder.setContentIntent(launchActivityIntent);
         mNotification = builder.build();
     }

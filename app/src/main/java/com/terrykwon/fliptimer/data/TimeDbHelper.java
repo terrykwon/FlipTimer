@@ -1,20 +1,30 @@
-package com.kwonterry.fliptimer.data;
+package com.terrykwon.fliptimer.data;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+
+import java.util.ArrayList;
 
 /**
  * Created by Terry Kwon on 1/1/2016.
  */
 public class TimeDbHelper extends SQLiteOpenHelper{
 
+    private static TimeDbHelper instance;
+
     private final String LOG_TAG = TimeDbHelper.class.getSimpleName();
     private static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "time.db";
+
+    public static synchronized TimeDbHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new TimeDbHelper(context.getApplicationContext());
+        }
+        return instance;
+    }
 
     public TimeDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -55,6 +65,7 @@ public class TimeDbHelper extends SQLiteOpenHelper{
         }
 
         long result = db.insert(TimeContract.TimeEntry.TABLE_NAME, null, contentValues);
+
         return (result != -1);
     }
 
@@ -69,9 +80,11 @@ public class TimeDbHelper extends SQLiteOpenHelper{
             long prevTime = cursor.getLong(cursor
                     .getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_TIME));
             cursor.close();
+
             return prevTime;
         } else {
             cursor.close();
+
             return 0;
         }
     }
@@ -80,6 +93,7 @@ public class TimeDbHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor result = db.rawQuery("SELECT * FROM " + TimeContract.TimeEntry.TABLE_NAME
                 + " ORDER BY " + TimeContract.TimeEntry._ID + " DESC", null);
+
         return result;
     }
 
@@ -88,6 +102,49 @@ public class TimeDbHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TimeContract.TimeEntry.TABLE_NAME, null, null);
         db.close();
+    }
+
+
+    public Integer[] getWorkTime() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null) {
+            return null;
+        } else {
+            Cursor cursor = db.rawQuery("SELECT " + TimeContract.TimeEntry.COLUMN_WORKTIME + " FROM "
+                    + TimeContract.TimeEntry.TABLE_NAME + " WHERE "
+                    + TimeContract.TimeEntry.COLUMN_STATUS + " == 0", null);
+            cursor.moveToFirst();
+
+            ArrayList<Integer> workTimes = new ArrayList<Integer>();
+            while (!cursor.isAfterLast()) {
+                workTimes.add(cursor.getInt(cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_WORKTIME)));
+                cursor.moveToNext();
+            }
+            cursor.close();
+//            db.close();
+            return workTimes.toArray(new Integer[workTimes.size()]);
+        }
+    }
+
+    public Integer[] getStopTime() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null) {
+            return null;
+        } else {
+            Cursor cursor = db.rawQuery("SELECT " + TimeContract.TimeEntry.COLUMN_WORKTIME + " FROM "
+                    + TimeContract.TimeEntry.TABLE_NAME + " WHERE "
+                    + TimeContract.TimeEntry.COLUMN_STATUS + " == 1", null);
+            cursor.moveToFirst();
+
+            ArrayList<Integer> workTimes = new ArrayList<Integer>();
+            while (!cursor.isAfterLast()) {
+                workTimes.add(cursor.getInt(cursor.getColumnIndexOrThrow(TimeContract.TimeEntry.COLUMN_WORKTIME)));
+                cursor.moveToNext();
+            }
+            cursor.close();
+//            db.close();
+            return workTimes.toArray(new Integer[workTimes.size()]);
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-package com.kwonterry.fliptimer;
+package com.terrykwon.fliptimer;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,8 +17,11 @@ public class PagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new TimerFragment();
+                // Don't need to break because return.
+                return new ChartFragment();
             case 1:
+                return new TimerFragment();
+            case 2:
                 return new RecordFragment();
             default:
                 break;
@@ -28,6 +31,6 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 }

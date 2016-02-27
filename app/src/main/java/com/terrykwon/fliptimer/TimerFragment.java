@@ -1,13 +1,11 @@
-package com.kwonterry.fliptimer;
+package com.terrykwon.fliptimer;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -18,9 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -47,7 +43,7 @@ public class TimerFragment extends Fragment {
 
     private ToggleButton startServiceToggle;
 
-    static final public String FLIPSERVICE_STOPPED = "com.kwonterry.fliptimer.FLIPSERVICE_STOPPED";
+    static final public String FLIPSERVICE_STOPPED = "com.terrykwon.fliptimer.FLIPSERVICE_STOPPED";
 
     public TimerFragment() {
         // Required empty public constructor
@@ -93,13 +89,13 @@ public class TimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View TimerView = inflater.inflate(R.layout.fragment_timer, container, false);
-//        mTextClock = (TextClock) TimerView.findViewById(R.id.textClock);
-        mBackground = TimerView.findViewById(R.id.layout_timer);
-        motivateText = (TextView) TimerView.findViewById(R.id.motivation_text);
+        View timerView = inflater.inflate(R.layout.fragment_timer, container, false);
+//        mTextClock = (TextClock) timerView.findViewById(R.id.textClock);
+        mBackground = timerView.findViewById(R.id.layout_timer);
+        motivateText = (TextView) timerView.findViewById(R.id.motivation_text);
         tabBar = (TabLayout) getActivity().findViewById(R.id.tab_layout);
 
-        startServiceToggle = (ToggleButton) TimerView.findViewById(R.id.toggle_service);
+        startServiceToggle = (ToggleButton) timerView.findViewById(R.id.toggle_service);
         startServiceToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -114,7 +110,7 @@ public class TimerFragment extends Fragment {
             }
         });
 
-        return TimerView;
+        return timerView;
     }
 
     public void whenStartFlipService() {

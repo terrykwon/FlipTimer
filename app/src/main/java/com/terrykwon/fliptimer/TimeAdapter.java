@@ -1,9 +1,7 @@
-package com.kwonterry.fliptimer;
+package com.terrykwon.fliptimer;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +9,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import com.kwonterry.fliptimer.data.TimeContract;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.terrykwon.fliptimer.data.TimeContract;
 
 /**
  * A CursorAdapter that is bound the the ListView in RecordFragment.
@@ -94,10 +89,12 @@ public class TimeAdapter extends CursorAdapter{
 
             if (status == 1) {
                 tvStatus.setText(R.string.started);
-                tvInterval.setText("Stop Interval: " + Time.formatInterval(intervalSeconds));
+                tvInterval.setText(context.getString(R.string.stop_interval,
+                        Time.formatInterval(intervalSeconds)));
             } else {
                 tvStatus.setText(R.string.stopped);
-                tvInterval.setText("Work Interval: " + Time.formatInterval(intervalSeconds));
+                tvInterval.setText(context.getString(R.string.work_interval,
+                        Time.formatInterval(intervalSeconds)));
             }
 
         } else if (cursor.isLast()) {
@@ -120,11 +117,13 @@ public class TimeAdapter extends CursorAdapter{
                 tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorGreen));
 
                 // use Strings with placeholders instead.
-                tvInterval.setText("Stop Interval: " + Time.formatInterval(intervalSeconds));
+                tvInterval.setText(context.getString(R.string.stop_interval,
+                        Time.formatInterval(intervalSeconds)));
             } else {
                 tvStatus.setText(R.string.stopped);
                 tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorRed));
-                tvInterval.setText("Work Interval: " + Time.formatInterval(intervalSeconds));
+                tvInterval.setText(context.getString(R.string.work_interval,
+                        Time.formatInterval(intervalSeconds)));
             }
         }
 

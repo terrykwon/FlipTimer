@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kwonterry.fliptimer.TimerFragment"
+    tools:context="com.terrykwon.fliptimer.TimerFragment"
     android:id="@+id/layout_timer"
     android:orientation="vertical"
     android:gravity="center"
@@ -10,10 +10,10 @@
     android:padding="16dp">
 
     <TextView
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:gravity="center"
         android:id="@+id/motivation_text"
         android:fontFamily="sans-serif-light"
@@ -36,9 +36,5 @@
             android:gravity="center" />
 
     </LinearLayout>
-
-
-
-
 
 </LinearLayout>

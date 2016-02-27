@@ -6,8 +6,17 @@
     <string name="started">STARTED</string>
     <string name="stopped">STOPPED</string>
     <string name="session_started">Session Started</string>
-    <string name="work_interval">Work Interval: </string>
-    <string name="stop_interval">Stop Interval: </string>
+    <string name="work_interval">Work Interval: %1$s</string>
+    <string name="stop_interval">Stop Interval: %1$s</string>
     <string name="flip_phone">Flip phone face down and work.</string>
+
+    <string name="in_interval">In %1$s,</string>
+    <string name="worked_for">You worked for %1$s.</string>
+    <string name="stopped_for">You stopped for %1$s.</string>
+    <string name="time_refreshed">Time Refreshed: %1$s</string>
+
+    <string name="service_running">Phlip! Service Running</string>
+    <string name="time_recorded">Time recorded when phone flipped face down/up.</string>
+    <string name="stop">Stop</string>
 
 </resources>

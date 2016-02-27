@@ -5,15 +5,15 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.kwonterry.fliptimer"
+        applicationId "com.terrykwon.fliptimer"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 6
+        versionName "1.0.1"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -25,4 +25,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:design:23.1.0'
     compile 'com.android.support:support-v4:23.1.0'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.2'
+}
+
+repositories {
+    maven { url "https://jitpack.io" }
 }

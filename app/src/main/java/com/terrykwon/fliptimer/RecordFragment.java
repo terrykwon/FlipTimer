@@ -1,19 +1,11 @@
-package com.kwonterry.fliptimer;
+package com.terrykwon.fliptimer;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.hardware.TriggerEvent;
-import android.hardware.TriggerEventListener;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,12 +13,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.kwonterry.fliptimer.data.TimeDbHelper;
+import com.terrykwon.fliptimer.data.TimeDbHelper;
 
 
 /**
@@ -65,7 +56,7 @@ public class RecordFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -82,17 +73,17 @@ public class RecordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View RecordView = inflater.inflate(R.layout.fragment_record, container, false);
+        View recordView = inflater.inflate(R.layout.fragment_record, container, false);
 
-        mTimeDbHelper = new TimeDbHelper(getContext());
+        mTimeDbHelper = TimeDbHelper.getInstance(getContext());
         mCursor = mTimeDbHelper.getAllData();
 
         mTimeAdapter = new TimeAdapter(getContext(), mCursor, 0);
 
-        recordListView = (ListView) RecordView.findViewById(R.id.listview_log);
+        recordListView = (ListView) recordView.findViewById(R.id.listview_log);
         recordListView.setAdapter(mTimeAdapter);
 
-        FloatingActionButton fab = (FloatingActionButton) RecordView.findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) recordView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,7 +94,7 @@ public class RecordFragment extends Fragment {
             }
         });
 
-        return RecordView;
+        return recordView;
     }
 
     public void onButtonPressed(Uri uri) {
@@ -144,6 +135,7 @@ public class RecordFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        mTimeDbHelper.close();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
     }
 

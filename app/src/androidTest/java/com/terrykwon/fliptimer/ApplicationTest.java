@@ -1,4 +1,4 @@
-package com.kwonterry.fliptimer;
+package com.terrykwon.fliptimer;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,7 +1,6 @@
-package com.kwonterry.fliptimer;
+package com.terrykwon.fliptimer;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -40,7 +39,8 @@ public class Time {
             return String.valueOf(interval) + " seconds";
         } else if (interval < 3600){
             long minutes = interval / 60;
-            return String.valueOf(minutes) + " minutes";
+            long seconds = interval % 60;
+            return String.valueOf(minutes) + " minutes " + String.valueOf(seconds) + " seconds";
         } else {
             long hours = interval / 3600;
             long minutes = (interval % 3600) / 60;

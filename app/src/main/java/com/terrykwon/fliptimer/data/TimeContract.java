@@ -1,4 +1,4 @@
-package com.kwonterry.fliptimer.data;
+package com.terrykwon.fliptimer.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
