@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.terrykwon.fliptimer.RecordFragment">
+    tools:context=".fragments.RecordFragment">
 
     <ListView
         android:layout_width="match_parent"

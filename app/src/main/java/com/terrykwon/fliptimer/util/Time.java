@@ -1,4 +1,8 @@
-package com.terrykwon.fliptimer;
+package com.terrykwon.fliptimer.util;
+
+import android.content.Context;
+
+import com.terrykwon.fliptimer.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,18 +37,20 @@ public class Time {
     }
 
     // Converts seconds to read-friendly String.
-    public static String formatInterval(long interval) {
+    public static String formatInterval(long interval, Context context) {
 
         if (interval < 60) {
-            return String.valueOf(interval) + " seconds";
+            return String.valueOf(interval) + context.getString(R.string.seconds);
         } else if (interval < 3600){
             long minutes = interval / 60;
             long seconds = interval % 60;
-            return String.valueOf(minutes) + " minutes " + String.valueOf(seconds) + " seconds";
+            return String.valueOf(minutes) + context.getString(R.string.minutes)
+                    + " " + String.valueOf(seconds) + context.getString(R.string.seconds);
         } else {
             long hours = interval / 3600;
             long minutes = (interval % 3600) / 60;
-            return String.valueOf(hours) + " hours " + String.valueOf(minutes) + " minutes";
+            return String.valueOf(hours) + context.getString(R.string.hours)
+                    + " " + String.valueOf(minutes) + context.getString(R.string.minutes);
         }
     }
 

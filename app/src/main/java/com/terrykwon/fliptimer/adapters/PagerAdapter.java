@@ -1,8 +1,12 @@
-package com.terrykwon.fliptimer;
+package com.terrykwon.fliptimer.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.terrykwon.fliptimer.fragments.ChartFragment;
+import com.terrykwon.fliptimer.fragments.RecordFragment;
+import com.terrykwon.fliptimer.fragments.TimerFragment;
 
 /**
  * Created by Terry Kwon on 1/23/2016.

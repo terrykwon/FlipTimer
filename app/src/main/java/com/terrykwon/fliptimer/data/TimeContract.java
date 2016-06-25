@@ -4,7 +4,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Created by Terry Kwon on 12/31/2015.
+ * A Contract class.
+ * Unused.
  */
 public class TimeContract {
     public static final String CONTENT_AUTHORITY = "com.kwonterry.fliptimer";

@@ -1,4 +1,4 @@
-package com.terrykwon.fliptimer;
+package com.terrykwon.fliptimer.fragments;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -17,17 +17,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.terrykwon.fliptimer.services.FlipService;
+import com.terrykwon.fliptimer.R;
+
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link TimerFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link TimerFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A fragment with the main function of displaying a toggle button.
+ * Starts sensor monitoring when button toggled.
  */
 public class TimerFragment extends Fragment {
 
@@ -38,6 +38,8 @@ public class TimerFragment extends Fragment {
     private View mBackground;
     private TextView motivateText;
     private TabLayout tabBar;
+
+    private LinearLayout appBar;
 
     private BroadcastReceiver receiver;
 
@@ -94,6 +96,7 @@ public class TimerFragment extends Fragment {
         mBackground = timerView.findViewById(R.id.layout_timer);
         motivateText = (TextView) timerView.findViewById(R.id.motivation_text);
         tabBar = (TabLayout) getActivity().findViewById(R.id.tab_layout);
+        appBar = (LinearLayout) getActivity().findViewById(R.id.appbar_layout);
 
         startServiceToggle = (ToggleButton) timerView.findViewById(R.id.toggle_service);
         startServiceToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -135,7 +138,7 @@ public class TimerFragment extends Fragment {
                     ContextCompat.getColor(getContext(), R.color.colorPrimary),
                     ContextCompat.getColor(getContext(), R.color.colorLightBlack));
             tabColorFade = ObjectAnimator.ofObject(
-                    tabBar, "backgroundColor",
+                    appBar, "backgroundColor",
                     new ArgbEvaluator(),
                     ContextCompat.getColor(getContext(), R.color.colorPrimary),
                     ContextCompat.getColor(getContext(), R.color.colorLightBlack));
@@ -147,7 +150,7 @@ public class TimerFragment extends Fragment {
                     ContextCompat.getColor(getContext(), R.color.colorLightBlack),
                     ContextCompat.getColor(getContext(), R.color.colorPrimary));
             tabColorFade = ObjectAnimator.ofObject(
-                    tabBar, "backgroundColor",
+                    appBar, "backgroundColor",
                     new ArgbEvaluator(),
                     ContextCompat.getColor(getContext(), R.color.colorLightBlack),
                     ContextCompat.getColor(getContext(), R.color.colorPrimary));

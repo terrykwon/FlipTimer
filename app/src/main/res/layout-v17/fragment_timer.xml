@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.terrykwon.fliptimer.TimerFragment"
+    tools:context=".fragments.TimerFragment"
     android:id="@+id/layout_timer"
     android:orientation="vertical"
     android:gravity="center"
@@ -47,7 +47,7 @@
         android:format24Hour="HH:mm:ss"
         android:id="@+id/textClock"
         android:fontFamily="sans-serif-thin"
-        android:textSize="60sp"
+        android:textSize="60dp"
         android:gravity="center|bottom" />
 
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.terrykwon.fliptimer;
+package com.terrykwon.fliptimer.fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,16 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.terrykwon.fliptimer.services.FlipService;
+import com.terrykwon.fliptimer.R;
+import com.terrykwon.fliptimer.adapters.TimeAdapter;
 import com.terrykwon.fliptimer.data.TimeDbHelper;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RecordFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RecordFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A Fragment with a ListView that displays recorded times.
  */
 public class RecordFragment extends Fragment {
 

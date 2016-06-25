@@ -1,5 +1,7 @@
-package com.terrykwon.fliptimer;
+package com.terrykwon.fliptimer.activities;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -8,8 +10,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.terrykwon.fliptimer.adapters.PagerAdapter;
+import com.terrykwon.fliptimer.R;
+import com.terrykwon.fliptimer.fragments.RecordFragment;
+import com.terrykwon.fliptimer.fragments.TimerFragment;
+
+/**
+ * The first screen that the app displays.
+ * Uses a ViewPager with 3 tabs.
+ */
 public class MainActivity extends AppCompatActivity implements
         TimerFragment.OnFragmentInteractionListener, RecordFragment.OnFragmentInteractionListener {
 
@@ -21,9 +33,6 @@ public class MainActivity extends AppCompatActivity implements
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_pie_chart_white_36dp));
@@ -65,14 +74,47 @@ public class MainActivity extends AppCompatActivity implements
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        return true;
+                        int id = item.getItemId();
+
+                        switch (id) {
+                            case R.id.menu_item_help:
+                                Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+                                startActivity(intent);
+                                return true;
+                            case R.id.menu_item_rate:
+                                openPlayStorePage();
+                                return true;
+                            default:
+                                return true;
+                        }
                     }
                 });
+
                 menu.show();
             }
         });
     }
 
+    // Opens Phlip! Play Store page.
+    private void openPlayStorePage() {
+        Uri uri = Uri.parse("market://details?id=" + getApplication().getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + getApplication().getPackageName())));
+        }
+    }
+
+    /**
+     * Pressing back button takes user to middle screen.
+     */
     @Override
     public void onBackPressed() {
         if (viewPager.getCurrentItem() != 1) {

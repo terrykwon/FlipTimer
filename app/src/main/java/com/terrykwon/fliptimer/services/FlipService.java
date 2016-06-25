@@ -1,4 +1,4 @@
-package com.terrykwon.fliptimer;
+package com.terrykwon.fliptimer.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -19,7 +19,11 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.terrykwon.fliptimer.R;
+import com.terrykwon.fliptimer.activities.MainActivity;
 import com.terrykwon.fliptimer.data.TimeDbHelper;
+import com.terrykwon.fliptimer.fragments.TimerFragment;
+import com.terrykwon.fliptimer.util.Time;
 
 
 /**
@@ -36,8 +40,6 @@ import com.terrykwon.fliptimer.data.TimeDbHelper;
 public class FlipService extends Service implements SensorEventListener{
 
     private final String LOG_TAG = FlipService.class.getSimpleName();
-    private Thread mThread;
-    private Runnable mRunnable;
 
     private Sensor mSensor;
     private SensorManager mManager;
@@ -66,13 +68,13 @@ public class FlipService extends Service implements SensorEventListener{
 
     private static boolean isRunning = false;
 
-    // because SensorManager.SENSOR_DELAY_NORMAL = 3 milliseconds and not really necessary.
+    // because SensorManager.SENSOR_DELAY_NORMAL = 200000 milliseconds and not really necessary.
     // but this is only maximum delay - always samples faster
-    private static final int SENSOR_DELAY_SLOW = 100;
+    private static final int SENSOR_DELAY_SLOW = 400000;
 
     // to prevent random fluctuations
     int count;
-    private static final int COUNT_THRESHHOLD = 100;
+    private static final int COUNT_THRESHHOLD = 6;
 
     // Detects when stop action is pressed from notification.
     // Sends a BroadCastIntent to TimerFragment to notify that service stopped.
@@ -116,15 +118,15 @@ public class FlipService extends Service implements SensorEventListener{
         isFaceUp = true;
         count = 0;
 
-        mRunnable = new Runnable() {
+        Runnable mRunnable = new Runnable() {
             @Override
             public void run() {
-                mManager.registerListener(FlipService.this, mSensor, SENSOR_DELAY_SLOW);
+                mManager.registerListener(FlipService.this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
                 Log.v(LOG_TAG, "SensorEventListener Registered.");
             }
         };
 
-        mThread = new Thread(mRunnable);
+        Thread mThread = new Thread(mRunnable);
         mThread.start();
 
         buildNotification();

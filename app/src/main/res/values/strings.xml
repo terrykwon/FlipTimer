@@ -1,22 +1,42 @@
 <resources>
-    <string name="app_name">Phlip!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name" translatable="false">Phlip!</string>
+    <string name="action_settings" translatable="false">Settings</string>
 
-    <string name="press_start">Press START to begin session.</string>
-    <string name="started">STARTED</string>
-    <string name="stopped">STOPPED</string>
-    <string name="session_started">Session Started</string>
-    <string name="work_interval">Work Interval: %1$s</string>
-    <string name="stop_interval">Stop Interval: %1$s</string>
-    <string name="flip_phone">Flip phone face down and work.</string>
+    <string name="press_start" translatable="false">Press START to begin session.</string>
+    <string name="started" translatable="false">STARTED</string>
+    <string name="stopped" translatable="false">STOPPED</string>
+    <string name="session_started" translatable="false">Session Started</string>
+    <string name="work_interval" translatable="false">Work Interval: %1$s</string>
+    <string name="stop_interval" translatable="false">Stop Interval: %1$s</string>
+    <string name="flip_phone" translatable="false">Flip phone face down and work.</string>
 
-    <string name="in_interval">In %1$s,</string>
-    <string name="worked_for">You worked for %1$s.</string>
-    <string name="stopped_for">You stopped for %1$s.</string>
-    <string name="time_refreshed">Time Refreshed: %1$s</string>
+    <string name="in_interval" translatable="false">In %1$s,</string>
+    <string name="worked_for" translatable="false">You worked for %1$s.</string>
+    <string name="stopped_for" translatable="false">You stopped for %1$s.</string>
+    <string name="time_refreshed" translatable="false">Time Refreshed: %1$s</string>
 
-    <string name="service_running">Phlip! Service Running</string>
-    <string name="time_recorded">Time recorded when phone flipped face down/up.</string>
-    <string name="stop">Stop</string>
+    <string name="hours" translatable="false">" hours"</string>
+    <string name="minutes" translatable="false">" minutes"</string>
+    <string name="seconds" translatable="false">" seconds"</string>
+
+    <string name="service_running" translatable="false">Phlip! Service Running</string>
+    <string name="time_recorded" translatable="false">Time recorded when phone flipped face down/up.</string>
+    <string name="stop" translatable="false">Stop</string>
+    <string name="title_activity_help" translatable="false">Help</string>
+
+    <string name="help" translatable="false">Help</string>
+    <string name="rate" translatable="false">Rate and Review!</string>
+
+    <string name="directions" translatable="false">Directions</string>
+    <string name="press_the_start" translatable="false">1. Press the START button, which is shaped like an alarm clock. This will start a background service that monitors the device\'s sensors. Your device will continue to be monitored even if Phlip! is closed via the home or back button. </string>
+    <string name="you_can_check" translatable="false">You can check that the background service is running by viewing the top of your screen: there should be a Phlip! icon in the status bar.</string>
+    <string name="swiping_the_navigation" translatable="false">Swiping the navigation drawer should reveal an ongoing notification with a stop button. Pressing it will stop all monitoring. If the stop button is not visible, click the notification to load the Phlip! app and press STOP from there.</string>
+    <string name="when_the_phlip" translatable="false">2. When the Phlip! service is running, flipping the device face up / face down will record the current time. If you flip your device face down, you have STARTED WORKING. If you flip your device back face-up, you have STOPPED WORKING.</string>
+    <string name="if_your_device" translatable="false">If your device is capable of vibrating, a short vibration will occur whenever the time is recorded.</string>
+    <string name="after_a_flip" translatable="false">After a flip, there may be a short delay of up to 1 second before the time is recorded. This is to ensure that random shakes do not register.</string>
+    <string name="note_that_your" translatable="false">Note that your STOP TIME only measures the interval between work. The app does not monitor your ongoing stop time.</string>
+    <string name="you_can_check_log" translatable="false">3. You can check your log in the rightmost tab. Press the DELETE button in the bottom-right corner to clear the log.</string>
+    <string name="you_can_check_pie" translatable="false">4. You can check a pie chart of your work/stop time in the leftmost tab. Press the REFRESH button in the bottom-right corner to refresh the chart.</string>
+
 
 </resources>

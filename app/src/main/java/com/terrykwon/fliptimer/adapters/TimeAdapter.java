@@ -1,4 +1,4 @@
-package com.terrykwon.fliptimer;
+package com.terrykwon.fliptimer.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import com.terrykwon.fliptimer.R;
+import com.terrykwon.fliptimer.util.Time;
 import com.terrykwon.fliptimer.data.TimeContract;
 
 /**
@@ -90,11 +92,11 @@ public class TimeAdapter extends CursorAdapter{
             if (status == 1) {
                 tvStatus.setText(R.string.started);
                 tvInterval.setText(context.getString(R.string.stop_interval,
-                        Time.formatInterval(intervalSeconds)));
+                        Time.formatInterval(intervalSeconds, context)));
             } else {
                 tvStatus.setText(R.string.stopped);
                 tvInterval.setText(context.getString(R.string.work_interval,
-                        Time.formatInterval(intervalSeconds)));
+                        Time.formatInterval(intervalSeconds, context)));
             }
 
         } else if (cursor.isLast()) {
@@ -118,12 +120,12 @@ public class TimeAdapter extends CursorAdapter{
 
                 // use Strings with placeholders instead.
                 tvInterval.setText(context.getString(R.string.stop_interval,
-                        Time.formatInterval(intervalSeconds)));
+                        Time.formatInterval(intervalSeconds, context)));
             } else {
                 tvStatus.setText(R.string.stopped);
                 tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorRed));
                 tvInterval.setText(context.getString(R.string.work_interval,
-                        Time.formatInterval(intervalSeconds)));
+                        Time.formatInterval(intervalSeconds, context)));
             }
         }
 

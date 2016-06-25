@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 /**
- * Created by Terry Kwon on 1/1/2016.
+ * Database containing recorded times.
+ * Current time, status, and work time is recorded,
+ * where worktime is currentTime(prev) - currentTime(current).
  */
 public class TimeDbHelper extends SQLiteOpenHelper{
 
