@@ -9,7 +9,7 @@ import com.terrykwon.fliptimer.fragments.RecordFragment;
 import com.terrykwon.fliptimer.fragments.TimerFragment;
 
 /**
- * Created by Terry Kwon on 1/23/2016.
+ * A FragmentPagerAdapter for the ViewPager.
  */
 public class PagerAdapter extends FragmentPagerAdapter {
 
