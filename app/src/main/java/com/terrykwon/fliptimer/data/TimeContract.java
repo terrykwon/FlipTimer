@@ -5,7 +5,6 @@ import android.provider.BaseColumns;
 
 /**
  * A Contract class.
- * Unused.
  */
 public class TimeContract {
     public static final String CONTENT_AUTHORITY = "com.kwonterry.fliptimer";
